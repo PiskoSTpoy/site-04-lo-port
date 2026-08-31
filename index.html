@@ -37,6 +37,18 @@
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://kran-lo.example/#website","name":"КРАН-ЛО","url":"https://kran-lo.example","inLanguage":"ru-RU","publisher":{"@id":"https://kran-lo.example/#organization"}}</script>
   
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+  (function(m,e,t,r,i,k,a){
+  m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112123760', 'ym');
+  ym(112123760, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/112123760" width="1" height="1" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
 </head>
 <body>
   <!-- .reveal class is written statically in markup and hidden via CSS until JS adds .is-visible.
@@ -88,8 +100,8 @@
       <div class="today__hero-scrim" aria-hidden="true"></div>
       <div class="today__copy">
         
-        <p class="today__rail" data-status-panel data-state="summer">
-          <span class="today__rail-date" data-status-date>31 августа 2026</span>
+        <p class="today__rail" data-status-panel data-state="clear">
+          <span class="today__rail-date" data-status-date>1 сентября 2026</span>
           <span class="today__rail-badge today__rail-badge--spring">Ограничение действует</span>
           <span class="today__rail-badge today__rail-badge--summer">Действует по погоде</span>
           <span class="today__rail-badge today__rail-badge--clear">Ограничения нет</span>
@@ -115,7 +127,7 @@
     
     
     
-<div class="status-panel" data-status-panel data-state="summer">
+<div class="status-panel" data-status-panel data-state="clear">
   <div class="status-panel__top">
     <div class="status-flag" aria-hidden="true"></div>
     <div class="status-panel__top-text">
@@ -127,9 +139,9 @@
       
     </div>
   </div>
-  <p class="status-panel__headline" data-status-headline>Летнее ограничение действует по погоде</p>
-  <p class="status-panel__limit" data-status-limit>В жаркий день тяжеловесам закрыт асфальтобетон с 10:00 до 22:00</p>
-  <p class="status-panel__detail" data-status-detail>Период 1 июня 2026 — 31 августа 2026 (осталось 1 день). Включается только в дни, когда дневная температура выше +32 °C.</p>
+  <p class="status-panel__headline" data-status-headline>Сезонных ограничений по осевой нагрузке нет</p>
+  <p class="status-panel__limit" data-status-limit>Ограничивает только общая норма по массе и габариту транспортного средства</p>
+  <p class="status-panel__detail" data-status-detail>Летний период закончился 31 августа 2026. До конца года новых периодов приказ № 5/26 не вводит.</p>
   <p class="status-panel__foot">
     Считается по датам приказа 2026 года, проверенным 12.08.2026. Сроки объявляются заново каждый сезон —
     <a href="https://kdh.lenobl.ru/ru/news/92107/" target="_blank" rel="noopener">первоисточник</a>, помесячно — в <a href="/kalendar/">календаре</a>.
@@ -181,14 +193,14 @@
     <span class="yearline__regime">жара</span>
   </li>
   
-  <li class="yearline__cell yearline__cell--summer is-now"
-      data-month="8" aria-current="date">
+  <li class="yearline__cell yearline__cell--summer"
+      data-month="8">
     <span class="yearline__month">Август</span>
     <span class="yearline__regime">жара</span>
   </li>
   
-  <li class="yearline__cell yearline__cell--clear"
-      data-month="9">
+  <li class="yearline__cell yearline__cell--clear is-now"
+      data-month="9" aria-current="date">
     <span class="yearline__month">Сентябрь</span>
     <span class="yearline__regime">свободно</span>
   </li>
