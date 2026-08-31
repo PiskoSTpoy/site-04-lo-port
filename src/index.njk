@@ -1,0 +1,627 @@
+---
+layout: layout.njk
+title: "Кран в Ленобласть: календарь ограничений и маршруты подачи"
+description: "Статус сезонных ограничений на дорогах Ленобласти на сегодня, годовая полоса режимов и таблица пределов по осям — когда и по какой дороге кран доедет."
+path: "/"
+---
+<main>
+  <section class="today wrap">
+    {# Волна 128 (мобильный первый экран). До неё телефон показывал на первом
+       экране ТОЛЬКО виджет статуса: h1 начинался на 1351-й точке (второй экран),
+       первая цена — на 9252-й (двенадцатый). Человек в руке не видел ни того,
+       что арендуем, ни за сколько. Порядок блоков внутри .today перевёрнут:
+       панель-«прибор» с показанием статуса, заголовком, коротким лидом и
+       ставками идёт первой, полный виджет статуса с деталью и происхождением —
+       сразу под ней. Тезис сайта не пострадал: страница по-прежнему НАЧИНАЕТСЯ
+       со статуса на сегодня (рейл в самой верхней строке панели), прайс идёт
+       после заголовка. Остаток лида не удалён, а перенесён ниже плашки фактов. #}
+    {# Волна 126 (панель сама): видео-hero (autoplay/muted/
+       loop/playsinline/preload=none/poster/aria-hidden/tabindex=-1 позади текста +
+       затемняющий scrim) в портовом hazard-коде — диагональная сигнальная
+       лента сверху панели. .today__hero-media держит
+       постер КАК CSS-ФОН отдельно от <video>: честный prefers-reduced-motion
+       фоллбэк без единой строчки JS. Источник видео/автор/лицензия — блок
+       «Источники» в конце страницы + content-plan.md, «Волна 126». #}
+    <div class="today__hero reveal">
+      <div class="today__hero-media" aria-hidden="true">
+        <video class="today__hero-video" autoplay muted loop playsinline preload="none" poster="/images/hero/hero-crane-silhouette-poster.jpg" aria-hidden="true" tabindex="-1">
+          <source src="/videos/hero-crane-silhouette.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="today__hero-scrim" aria-hidden="true"></div>
+      <div class="today__copy">
+        {# Показание прибора: дата и состояние приказа. Те же data-атрибуты, что
+           у полного виджета ниже, — /js/status.js пересчитывает оба на «сегодня»
+           пользователя одним и тем же вызовом statusFor(). Ничего не дублируется
+           словами: здесь только дата и плашка состояния, разбор — в виджете. #}
+        <p class="today__rail" data-status-panel data-state="{{ season.today.state }}">
+          <span class="today__rail-date" data-status-date>{{ season.today.dateHuman }}</span>
+          <span class="today__rail-badge today__rail-badge--spring">Ограничение действует</span>
+          <span class="today__rail-badge today__rail-badge--summer">Действует по погоде</span>
+          <span class="today__rail-badge today__rail-badge--clear">Ограничения нет</span>
+          <span class="today__rail-badge today__rail-badge--stale">Приказ не сверен</span>
+        </p>
+        <h1>Аренда крана в Ленобласти:<span class="today__h1-sub">сначала дата и дорога, потом модель</span></h1>
+        {# Ставки — не новые числа: ровно те, что живут в src/js/calculator.js
+           (rates) и уже показаны в шагах калькулятора ниже по странице.
+           Стоят сразу под заголовком, а не под лидом: первые два предложения
+           после </h1> — это и есть извлекаемый прямой ответ (rubric_lint,
+           geo-answer-first), и цена отвечает на вопрос страницы лучше, чем
+           объяснение, почему сайт устроен вокруг календаря. #}
+        <div class="today__rates">
+          <span class="today__rate">
+            <span class="today__rate-name">Автокран</span>
+            <b class="today__rate-num">от 4 000 ₽/час</b>
+          </span>
+          <span class="today__rate">
+            <span class="today__rate-name">Гусеничный</span>
+            <b class="today__rate-num">от 6 000 ₽/час</b>
+          </span>
+        </div>
+        <p class="today__rates-note">Смена 8 часов — минимальный заказ. <a href="#calculator-block">Посчитать смену →</a></p>
+        <p class="prose">Заявку в область ломает не грузоподъёмность. Её ломает число в календаре и покрытие того плеча, по которому техника поедет.</p>
+      </div>
+    </div>
+
+    {# Дата и плашка состояния уже стоят в рейле панели выше — в самом виджете
+       они не повторяются, иначе одно и то же читается дважды на одном экране. #}
+    {% set statusRailAbove = true %}
+    {% include "status-panel.njk" %}
+    {% include "yearline.njk" %}
+
+    {# Волна 19: честная плашка фактов — только то, что реально считается на
+       странице (дата проверки, приказ, число карточек маршрутов ниже). #}
+    <div class="fact-plate reveal">
+      <div class="fact-plate__item">
+        <span class="fact-plate__num">{{ season.checked }}</span>
+        <span class="fact-plate__label">Дата проверки статуса</span>
+      </div>
+      <div class="fact-plate__item">
+        <span class="fact-plate__num">{{ season.order.number }}</span>
+        <span class="fact-plate__label">Действующий приказ, {{ season.order.date }}</span>
+      </div>
+      <div class="fact-plate__item">
+        <span class="fact-plate__num">7</span>
+        <span class="fact-plate__label">Плеч подачи на контроле</span>
+      </div>
+    </div>
+
+    {# Волна 128: остаток лида. Раньше эти два абзаца стояли в hero и давали
+       на телефоне стену в 11 строк (14 на 320px) до первой цифры. Ни одно слово
+       не удалено — перенесено сюда, под плашку фактов, где «ниже — предел по
+       осям…» и стоит ровно перед таблицей пределов. #}
+    <div class="today__copy today__copy--more">
+      <p class="prose">На региональных дорогах Ленинградской области сезонный приказ {{ season.order.number }} от {{ season.order.date }} ограничивает нагрузку на ось, а часть площадок вообще не имеет твёрдого покрытия. Поэтому сайт начинается не с прайса, а со статуса на сегодня.</p>
+      <p class="prose">Ниже — предел по осям для каждого типа покрытия, семь плеч подачи с их фактическим статусом в приказе и то, что физически проходит под каждым лимитом.</p>
+      <p class="prose">Если ваша дата попадает на закрытый период, это ещё не «нет»: два участка на пути к Усть-Луге приказом {{ season.year }} года из-под ограничения выведены, и мы сверяем маршрут поимённо.</p>
+    </div>
+  </section>
+
+  <section class="section section--lg wrap" id="predely">
+    <div class="section-head">
+      <span class="eyebrow">Справочник</span>
+      <h2>Предел по осям: период × покрытие</h2>
+      <p>Таблица заменяет собой список частых вопросов: здесь ровно то, что определяет, поедет техника или нет. Каждая строка — с источником и датой проверки.</p>
+    </div>
+    <div class="spec-wrap">
+      <table role="table" class="spec-table">
+        <caption>Сезонные ограничения на дорогах общего пользования регионального значения Ленинградской области, сезон {{ season.year }} года.</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Период</th>
+            <th role="columnheader" scope="col">Тип покрытия</th>
+            <th role="columnheader" scope="col">Предел нагрузки на ось</th>
+            <th role="columnheader" scope="col">Источник и дата проверки</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th role="rowheader" scope="row">20 марта — 18 апреля {{ season.year }}</th>
+            <td role="cell" data-label="Тип покрытия">Асфальтобетон</td>
+            <td role="cell" data-label="Предел нагрузки на ось"><b>5 т на ось</b></td>
+            <td role="cell" data-label="Источник и дата проверки">Приказ {{ season.order.number }} от {{ season.order.date }}, {{ season.order.authority }}. Проверено {{ season.checked }}</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row">20 марта — 18 апреля {{ season.year }}</th>
+            <td role="cell" data-label="Тип покрытия">Гравий, грунт</td>
+            <td role="cell" data-label="Предел нагрузки на ось"><b>3 т на ось</b></td>
+            <td role="cell" data-label="Источник и дата проверки">Тот же приказ. Проверено {{ season.checked }}</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row">20 марта — 18 апреля {{ season.year }}</th>
+            <td role="cell" data-label="Тип покрытия">Два поимённых участка-исключения</td>
+            <td role="cell" data-label="Предел нагрузки на ось">Без ограничения</td>
+            <td role="cell" data-label="Источник и дата проверки">км 220+000 – км 263+456 дороги «Псков – Гдов – Сланцы – Кингисепп – Краколье» и км 0+000 – км 4+000 дороги «Лужицы – Первое Мая». Проверено {{ season.checked }}</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row">1 июня — 31 августа {{ season.year }}, дни жарче +32 °C</th>
+            <td role="cell" data-label="Тип покрытия">Асфальтобетон</td>
+            <td role="cell" data-label="Предел нагрузки на ось">Движение тяжеловесов закрыто с 10:00 до 22:00</td>
+            <td role="cell" data-label="Источник и дата проверки">Тот же приказ, летний период. Проверено {{ season.checked }}</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row">Дороги федерального значения в любой период</th>
+            <td role="cell" data-label="Тип покрытия">Асфальтобетон</td>
+            <td role="cell" data-label="Предел нагрузки на ось">Региональный приказ не применяется</td>
+            <td role="cell" data-label="Источник и дата проверки">Приказ издан по дорогам регионального значения; A-180 «Нарва» и подъезд к порту — федеральные. Проверено {{ season.checked }}</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row">Остальные месяцы</th>
+            <td role="cell" data-label="Тип покрытия">Любое</td>
+            <td role="cell" data-label="Предел нагрузки на ось">Сезонного лимита нет</td>
+            <td role="cell" data-label="Источник и дата проверки">В приказе {{ season.order.number }} только два периода — весенний и летний. Проверено {{ season.checked }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose" style="margin-top:22px">Строительная техника и краны в перечень исключений по виду груза не входят — там продукты, топливо, лекарства, семенной фонд, удобрения, опасные грузы, сельхозтехника и обслуживание магистральных сетей. Помесячная раскладка режимов и то, что ограничение бывает не только дорожным, — в <a href="/kalendar/">календаре ограничений</a>.</p>
+  </section>
+
+  <section class="section wrap" id="marshruty">
+    <div class="section-head">
+      <span class="eyebrow">Плечи подачи</span>
+      <h2>По какой дороге поедет техника</h2>
+      <p>Область — это не одна дорога. Статус плеча в приказе решает больше, чем класс крана: соседние участки в один и тот же день могут быть открыты и закрыты.</p>
+    </div>
+
+    {# Волна 19: line-art-схема маршрута — визуальный якорь между таблицей пределов
+       выше и карточками плеч ниже. Трал везёт груз по региональной дороге: слева —
+       съезд на грунтовку с предупреждающим знаком по гравийному лимиту, справа —
+       гантри-указатель лимита перед мостом/асфальтом. Оба знака берут цифры из
+       season-logic.js — те же, что в таблице «Предел по осям» выше, ничего не выдумано. #}
+    <div class="route-scheme reveal">
+      {# Волна 130. Схема ниже нарисована в поле 1200×260 — на телефоне она
+         сжимается в 347 точек ширины, то есть в 0,29 натуральной величины:
+         «5 Т» на знаке становится 6 пикселями, подпись «/ОСЬ · МОСТ» — тремя.
+         Подпись под схемой при этом утверждает, что оба знака не иллюстрация,
+         а те же цифры, что в таблице выше, — прочитать их было нельзя.
+
+         Ниже 760px рисуется другая схема того же плеча: поле 340×250, знаки
+         во всю ширину карточки, единица под знаком отдельной табличкой —
+         ровно так подписывают дорожный знак. Слова и числа те же (те же
+         season.spring.*), просто композиция под вертикальный экран, а не
+         обрезок горизонтальной. #}
+      <svg class="route-scheme__svg route-scheme__svg--narrow" viewBox="0 0 340 228" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема плеча подачи: гантри-указатель лимита {{ season.spring.asphalt }} тонн на ось на асфальтобетоне и знак лимита {{ season.spring.gravel }} тонны на ось там, где асфальт кончается">
+        <title>Два предела на одном плече: асфальтобетон и грунт</title>
+        <defs>
+          <pattern id="rsmHazard" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="18" height="18" class="rs-hazard-bg"></rect>
+            <rect width="9" height="18" class="rs-hazard-fg"></rect>
+          </pattern>
+          <pattern id="rsmGround" width="14" height="14" patternUnits="userSpaceOnUse">
+            <rect width="14" height="14" class="rs-ground-bg"></rect>
+            <path d="M0 14L14 0" class="rs-ground-line"></path>
+            <path d="M-3 3L3 -3" class="rs-ground-line"></path>
+            <path d="M11 17L17 11" class="rs-ground-line"></path>
+          </pattern>
+        </defs>
+
+        <!-- Полотно: сигнальная кромка, асфальт слева, грунт справа -->
+        <rect class="rs-edge" x="0" y="192" width="340" height="5" fill="url(#rsmHazard)"></rect>
+        <rect class="rs-road" x="0" y="197" width="197" height="24"></rect>
+        <line class="rs-centerline" x1="0" y1="209" x2="182" y2="209" stroke-dasharray="20 14"></line>
+        <rect class="rs-ground" x="196" y="197" width="144" height="24" fill="url(#rsmGround)"></rect>
+
+        <!-- Гантри над асфальтом: предел на твёрдом покрытии -->
+        <rect class="rs-post" x="14" y="33" width="9" height="164"></rect>
+        <rect class="rs-post" x="151" y="33" width="9" height="164"></rect>
+        <rect class="rs-beam" x="8" y="22" width="158" height="11"></rect>
+        <line class="rs-stem" x1="87" y1="33" x2="87" y2="66"></line>
+        <polygon class="rs-sign rs-sign--narrow" points="87,66 131,110 87,154 43,110"></polygon>
+        <text class="rs-sign-text rs-sign-text--narrow" x="87" y="121">{{ season.spring.asphalt }} Т</text>
+        <rect class="rs-plate" x="40" y="160" width="94" height="20"></rect>
+        <text class="rs-plate-text" x="87" y="175">/ОСЬ · МОСТ</text>
+
+        <!-- Знак там, где твёрдое покрытие кончилось -->
+        <rect class="rs-post" x="248" y="168" width="8" height="29"></rect>
+        <polygon class="rs-sign rs-sign--narrow" points="252,58 294,100 252,142 210,100"></polygon>
+        <text class="rs-sign-text rs-sign-text--narrow" x="252" y="111">{{ season.spring.gravel }} Т</text>
+        <rect class="rs-plate" x="203" y="148" width="98" height="20"></rect>
+        <text class="rs-plate-text" x="252" y="163">/ОСЬ · ГРУНТ</text>
+      </svg>
+      <svg class="route-scheme__svg route-scheme__svg--wide" viewBox="0 0 1200 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схема плеча подачи: трал с грузом на региональной дороге, знак лимита {{ season.spring.gravel }} тонны на ось перед съездом на грунтовку и знак лимита {{ season.spring.asphalt }} тонн на ось перед мостом">
+        <title>Схема маршрута: трал, съезд на грунтовку и мостовой лимит</title>
+        <defs>
+          <pattern id="rsHazard" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="18" height="18" class="rs-hazard-bg"></rect>
+            <rect width="9" height="18" class="rs-hazard-fg"></rect>
+          </pattern>
+          <pattern id="rsGround" width="14" height="14" patternUnits="userSpaceOnUse">
+            <rect width="14" height="14" class="rs-ground-bg"></rect>
+            <path d="M0 14L14 0" class="rs-ground-line"></path>
+            <path d="M-3 3L3 -3" class="rs-ground-line"></path>
+            <path d="M11 17L17 11" class="rs-ground-line"></path>
+          </pattern>
+        </defs>
+
+        <rect class="rs-edge" x="0" y="190" width="1200" height="6" fill="url(#rsHazard)"></rect>
+        <rect class="rs-road" x="0" y="196" width="1200" height="26"></rect>
+        <line class="rs-centerline" x1="0" y1="209" x2="1200" y2="209" stroke-dasharray="24 16"></line>
+
+        <!-- Трал с грузом (низкорамная многоосная платформа — тема «предел по осям») -->
+        <rect class="rs-cab" x="30" y="140" width="56" height="56"></rect>
+        <rect class="rs-window" x="39" y="149" width="24" height="20"></rect>
+        <line class="rs-hitch" x1="86" y1="188" x2="110" y2="188"></line>
+        <rect class="rs-bed" x="110" y="180" width="180" height="16"></rect>
+        <line class="rs-corr" x1="122" y1="180" x2="122" y2="196"></line>
+        <line class="rs-corr" x1="140" y1="180" x2="140" y2="196"></line>
+        <line class="rs-corr" x1="158" y1="180" x2="158" y2="196"></line>
+        <line class="rs-corr" x1="176" y1="180" x2="176" y2="196"></line>
+        <line class="rs-corr" x1="194" y1="180" x2="194" y2="196"></line>
+        <line class="rs-corr" x1="212" y1="180" x2="212" y2="196"></line>
+        <line class="rs-corr" x1="230" y1="180" x2="230" y2="196"></line>
+        <line class="rs-corr" x1="248" y1="180" x2="248" y2="196"></line>
+        <line class="rs-corr" x1="266" y1="180" x2="266" y2="196"></line>
+        <rect class="rs-load" x="124" y="138" width="32" height="42"></rect>
+        <line class="rs-load-corr" x1="134.7" y1="138" x2="134.7" y2="180"></line>
+        <line class="rs-load-corr" x1="145.3" y1="138" x2="145.3" y2="180"></line>
+        <rect class="rs-load" x="162" y="138" width="32" height="42"></rect>
+        <line class="rs-load-corr" x1="172.7" y1="138" x2="172.7" y2="180"></line>
+        <line class="rs-load-corr" x1="183.3" y1="138" x2="183.3" y2="180"></line>
+        <rect class="rs-load" x="200" y="138" width="32" height="42"></rect>
+        <line class="rs-load-corr" x1="210.7" y1="138" x2="210.7" y2="180"></line>
+        <line class="rs-load-corr" x1="221.3" y1="138" x2="221.3" y2="180"></line>
+        <circle class="rs-wheel" cx="58" cy="196" r="12"></circle>
+        <circle class="rs-hub" cx="58" cy="196" r="4"></circle>
+        <circle class="rs-wheel" cx="140" cy="196" r="11"></circle>
+        <circle class="rs-hub" cx="140" cy="196" r="4"></circle>
+        <circle class="rs-wheel" cx="180" cy="196" r="11"></circle>
+        <circle class="rs-hub" cx="180" cy="196" r="4"></circle>
+        <circle class="rs-wheel" cx="220" cy="196" r="11"></circle>
+        <circle class="rs-hub" cx="220" cy="196" r="4"></circle>
+        <circle class="rs-wheel" cx="260" cy="196" r="11"></circle>
+        <circle class="rs-hub" cx="260" cy="196" r="4"></circle>
+
+        <!-- Съезд на грунтовку + знак гравийного лимита -->
+        <polyline class="rs-fork" points="470,209 560,209 650,246"></polyline>
+        <rect class="rs-ground" x="590" y="234" width="170" height="24" fill="url(#rsGround)"></rect>
+        <line class="rs-stem" x1="630" y1="164" x2="618" y2="234"></line>
+        <polygon class="rs-sign" points="630,76 674,120 630,164 586,120"></polygon>
+        <text class="rs-sign-text" x="630" y="114">{{ season.spring.gravel }} Т</text>
+        <text class="rs-sign-text rs-sign-text--sub" x="630" y="132">/ОСЬ · ГРУНТ</text>
+
+        <!-- Гантри-указатель лимита перед мостом/асфальтом -->
+        <rect class="rs-post" x="900" y="70" width="14" height="126"></rect>
+        <rect class="rs-post" x="1066" y="70" width="14" height="126"></rect>
+        <rect class="rs-beam" x="894" y="62" width="192" height="14"></rect>
+        <line class="rs-brace" x1="914" y1="196" x2="1066" y2="78"></line>
+        <line class="rs-stem" x1="990" y1="76" x2="990" y2="100"></line>
+        <polygon class="rs-sign" points="990,100 1030,140 990,180 950,140"></polygon>
+        <text class="rs-sign-text" x="990" y="134">{{ season.spring.asphalt }} Т</text>
+        <text class="rs-sign-text rs-sign-text--sub" x="990" y="152">/ОСЬ · МОСТ</text>
+
+        <polyline class="rs-arrow" points="1140,196 1162,209 1140,222"></polyline>
+      </svg>
+      <p class="route-scheme__cap">Оба знака на схеме — не иллюстрация ради иллюстрации: {{ season.spring.asphalt }} т/ось на асфальте и {{ season.spring.gravel }} т/ось на гравии и грунте — те же цифры весеннего периода, что в таблице пределов выше. Гружёный трал проходит их по факту нагрузки на самую тяжёлую ось, а не по паспортной массе целиком.</p>
+    </div>
+
+    <div class="route-grid">
+      <a class="route-card reveal" href="/marshruty/ust-luga-port/">
+        <span class="route-card__limit">Вне регионального приказа</span>
+        <h3>Кингисепп — порт Усть-Луга</h3>
+        <p>Федеральная A-180 «Нарва» плюс 52-километровый подъезд к порту, построенный Росавтодором. Региональное ограничение сюда не дотягивается.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/karery-volosovo/">
+        <span class="route-card__limit">Весной 3 т/ось</span>
+        <h3>Волосовское направление и карьеры</h3>
+        <p>Кикерино и Корчаны: региональные дороги, гравийные и грунтовые съезды, поверх которых лежит внутренний режим самого карьера.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/gruntovki-i-sezdy/">
+        <span class="route-card__limit">Весной 3 т/ось</span>
+        <h3>Грунтовки и местные съезды</h3>
+        <p>Самый жёсткий лимит области. Именно съезды с открытого плеча закрываются весной, а не само плечо — на этом чаще всего и спотыкаются.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/asfaltobeton-gatchina-lomonosov/">
+        <span class="route-card__limit">Весной 5 т/ось, летом окно по жаре</span>
+        <h3>Асфальтобетон: Гатчина и Ломоносов</h3>
+        <p>Плечи ближе к городу с твёрдым покрытием: весной лимит вдвое мягче, зато летом добавляется температурное окно 10:00–22:00.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/vyborgskoe-napravlenie/">
+        <span class="route-card__limit">Два статуса дороги сразу</span>
+        <h3>Выборгское направление</h3>
+        <p>Приморск и Высоцк: федеральная «Скандинавия» без приказа плюс региональный подъезд под ним же, и погранзона уже финской границы.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/vsevolozhskoe-napravlenie/">
+        <span class="route-card__limit">Кольцо рядом, лимит — на месте</span>
+        <h3>Всеволожское направление</h3>
+        <p>Складской кластер Порошкино и Бугров: федеральная КАД проходит рядом, но подъезд к самой площадке — региональный, под полным приказом.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/priozerskoe-napravlenie/">
+        <span class="route-card__limit">Федеральный ствол почти до места</span>
+        <h3>Приозерское направление</h3>
+        <p>Орехово и Сосново: федеральная А-121 «Сортавала» без приказа почти до поворота, дальше — региональный подъезд к площадке курортного комплекса.</p>
+      </a>
+    </div>
+    <p class="prose" style="margin-top:22px"><a href="/marshruty/">Все семь плеч с паспортами и таблицами проходимости →</a></p>
+  </section>
+
+  {# Полоса-палуба + панель: иллюстрация и два факта под ней теперь один
+     прибор в общей рамке, а не силуэт в пустоте и отдельная лента ниже.
+     viewBox подрезан сверху на 62 единицы — там не было нарисовано ничего,
+     и эта пустота занимала шестую часть высоты блока. #}
+  <div class="port-band band wrap">
+   <div class="port-panel">
+    <div class="hero-illustration">
+<svg class="hero-illustration__svg" viewBox="0 62 1200 358" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Схематичная иллюстрация: гусеничный кран поднимает контейнер на фоне портового портального крана">
+<title>Гусеничный кран на портовой площадке — иллюстрация</title>
+<g class="i-bg-crane">
+<line x1="1010" y1="110" x2="1010" y2="336"/>
+<line x1="1120" y1="110" x2="1120" y2="336"/>
+<line x1="1065" y1="110" x2="1065" y2="336"/>
+<line x1="1010" y1="110" x2="1120" y2="110"/>
+<line x1="1120" y1="110" x2="1195" y2="150"/>
+<line x1="1010" y1="110" x2="950" y2="130"/>
+<line x1="1010" y1="336" x2="1120" y2="220"/>
+<line x1="1120" y1="336" x2="1010" y2="220"/>
+</g>
+<line class="i-water" x1="0" y1="352" x2="1200" y2="352" stroke-dasharray="18 14" style="animation-delay:0.00s"/>
+<line class="i-water" x1="0" y1="368" x2="1200" y2="368" stroke-dasharray="18 14" style="animation-delay:0.35s"/>
+<line class="i-water" x1="0" y1="384" x2="1200" y2="384" stroke-dasharray="18 14" style="animation-delay:0.70s"/>
+<line class="i-water" x1="0" y1="400" x2="1200" y2="400" stroke-dasharray="18 14" style="animation-delay:1.05s"/>
+<line class="i-water" x1="0" y1="414" x2="1200" y2="414" stroke-dasharray="18 14" style="animation-delay:1.40s"/>
+<line class="i-quay" x1="0" y1="336" x2="1200" y2="336"/>
+<rect class="i-cont-a" x="40.0" y="266.0" width="64.0" height="70.0"/>
+<line class="i-corr" x1="50.7" y1="270.0" x2="50.7" y2="332.0"/>
+<line class="i-corr" x1="61.3" y1="270.0" x2="61.3" y2="332.0"/>
+<line class="i-corr" x1="72.0" y1="270.0" x2="72.0" y2="332.0"/>
+<line class="i-corr" x1="82.7" y1="270.0" x2="82.7" y2="332.0"/>
+<line class="i-corr" x1="93.3" y1="270.0" x2="93.3" y2="332.0"/>
+<line class="i-corr-strong" x1="94.0" y1="270.0" x2="94.0" y2="332.0"/>
+<rect class="i-cont-a" x="110.0" y="266.0" width="64.0" height="70.0"/>
+<line class="i-corr" x1="120.7" y1="270.0" x2="120.7" y2="332.0"/>
+<line class="i-corr" x1="131.3" y1="270.0" x2="131.3" y2="332.0"/>
+<line class="i-corr" x1="142.0" y1="270.0" x2="142.0" y2="332.0"/>
+<line class="i-corr" x1="152.7" y1="270.0" x2="152.7" y2="332.0"/>
+<line class="i-corr" x1="163.3" y1="270.0" x2="163.3" y2="332.0"/>
+<line class="i-corr-strong" x1="164.0" y1="270.0" x2="164.0" y2="332.0"/>
+<rect class="i-cont-accent" x="180.0" y="266.0" width="64.0" height="70.0"/>
+<line class="i-corr-dark" x1="190.7" y1="270.0" x2="190.7" y2="332.0"/>
+<line class="i-corr-dark" x1="201.3" y1="270.0" x2="201.3" y2="332.0"/>
+<line class="i-corr-dark" x1="212.0" y1="270.0" x2="212.0" y2="332.0"/>
+<line class="i-corr-dark" x1="222.7" y1="270.0" x2="222.7" y2="332.0"/>
+<line class="i-corr-dark" x1="233.3" y1="270.0" x2="233.3" y2="332.0"/>
+<line class="i-corr-dark-strong" x1="234.0" y1="270.0" x2="234.0" y2="332.0"/>
+<rect class="i-cont-a" x="250.0" y="266.0" width="64.0" height="70.0"/>
+<line class="i-corr" x1="260.7" y1="270.0" x2="260.7" y2="332.0"/>
+<line class="i-corr" x1="271.3" y1="270.0" x2="271.3" y2="332.0"/>
+<line class="i-corr" x1="282.0" y1="270.0" x2="282.0" y2="332.0"/>
+<line class="i-corr" x1="292.7" y1="270.0" x2="292.7" y2="332.0"/>
+<line class="i-corr" x1="303.3" y1="270.0" x2="303.3" y2="332.0"/>
+<line class="i-corr-strong" x1="304.0" y1="270.0" x2="304.0" y2="332.0"/>
+<rect class="i-cont-a" x="40.0" y="196.0" width="64.0" height="70.0"/>
+<line class="i-corr" x1="50.7" y1="200.0" x2="50.7" y2="262.0"/>
+<line class="i-corr" x1="61.3" y1="200.0" x2="61.3" y2="262.0"/>
+<line class="i-corr" x1="72.0" y1="200.0" x2="72.0" y2="262.0"/>
+<line class="i-corr" x1="82.7" y1="200.0" x2="82.7" y2="262.0"/>
+<line class="i-corr" x1="93.3" y1="200.0" x2="93.3" y2="262.0"/>
+<line class="i-corr-strong" x1="94.0" y1="200.0" x2="94.0" y2="262.0"/>
+<rect class="i-cont-a" x="110.0" y="196.0" width="64.0" height="70.0"/>
+<line class="i-corr" x1="120.7" y1="200.0" x2="120.7" y2="262.0"/>
+<line class="i-corr" x1="131.3" y1="200.0" x2="131.3" y2="262.0"/>
+<line class="i-corr" x1="142.0" y1="200.0" x2="142.0" y2="262.0"/>
+<line class="i-corr" x1="152.7" y1="200.0" x2="152.7" y2="262.0"/>
+<line class="i-corr" x1="163.3" y1="200.0" x2="163.3" y2="262.0"/>
+<line class="i-corr-strong" x1="164.0" y1="200.0" x2="164.0" y2="262.0"/>
+<rect class="i-cont-outline" x="40.0" y="126.0" width="64.0" height="70.0"/>
+<rect class="i-track" x="560" y="306" width="280" height="30"/>
+<line class="i-track-tick" x1="566.0" y1="306.0" x2="566.0" y2="336.0"/>
+<line class="i-track-tick" x1="579.0" y1="306.0" x2="579.0" y2="336.0"/>
+<line class="i-track-tick" x1="592.0" y1="306.0" x2="592.0" y2="336.0"/>
+<line class="i-track-tick" x1="605.0" y1="306.0" x2="605.0" y2="336.0"/>
+<line class="i-track-tick" x1="618.0" y1="306.0" x2="618.0" y2="336.0"/>
+<line class="i-track-tick" x1="631.0" y1="306.0" x2="631.0" y2="336.0"/>
+<line class="i-track-tick" x1="644.0" y1="306.0" x2="644.0" y2="336.0"/>
+<line class="i-track-tick" x1="657.0" y1="306.0" x2="657.0" y2="336.0"/>
+<line class="i-track-tick" x1="670.0" y1="306.0" x2="670.0" y2="336.0"/>
+<line class="i-track-tick" x1="683.0" y1="306.0" x2="683.0" y2="336.0"/>
+<line class="i-track-tick" x1="696.0" y1="306.0" x2="696.0" y2="336.0"/>
+<line class="i-track-tick" x1="709.0" y1="306.0" x2="709.0" y2="336.0"/>
+<line class="i-track-tick" x1="722.0" y1="306.0" x2="722.0" y2="336.0"/>
+<line class="i-track-tick" x1="735.0" y1="306.0" x2="735.0" y2="336.0"/>
+<line class="i-track-tick" x1="748.0" y1="306.0" x2="748.0" y2="336.0"/>
+<line class="i-track-tick" x1="761.0" y1="306.0" x2="761.0" y2="336.0"/>
+<line class="i-track-tick" x1="774.0" y1="306.0" x2="774.0" y2="336.0"/>
+<line class="i-track-tick" x1="787.0" y1="306.0" x2="787.0" y2="336.0"/>
+<line class="i-track-tick" x1="800.0" y1="306.0" x2="800.0" y2="336.0"/>
+<line class="i-track-tick" x1="813.0" y1="306.0" x2="813.0" y2="336.0"/>
+<line class="i-track-tick" x1="826.0" y1="306.0" x2="826.0" y2="336.0"/>
+<rect class="i-cw" x="726.0" y="264.0" width="52.0" height="44.0"/>
+<rect class="i-cab" x="612.0" y="244.0" width="120.0" height="64.0"/>
+<rect class="i-window" x="628.0" y="256.0" width="36.0" height="26.0"/>
+<circle class="i-pin" cx="702" cy="258" r="6"/>
+<line class="i-boom" x1="702.0" y1="244.0" x2="649.6" y2="225.3"/>
+<line class="i-boom" x1="702.0" y1="272.0" x2="652.2" y2="252.0"/>
+<line class="i-boom" x1="649.6" y1="225.3" x2="597.1" y2="206.7"/>
+<line class="i-boom" x1="652.2" y1="252.0" x2="602.4" y2="232.0"/>
+<line class="i-boom" x1="597.1" y1="206.7" x2="544.7" y2="188.0"/>
+<line class="i-boom" x1="602.4" y1="232.0" x2="552.7" y2="212.0"/>
+<line class="i-boom" x1="544.7" y1="188.0" x2="492.2" y2="169.3"/>
+<line class="i-boom" x1="552.7" y1="212.0" x2="502.9" y2="192.0"/>
+<line class="i-boom" x1="492.2" y1="169.3" x2="439.8" y2="150.7"/>
+<line class="i-boom" x1="502.9" y1="192.0" x2="453.1" y2="172.0"/>
+<line class="i-boom" x1="439.8" y1="150.7" x2="387.3" y2="132.0"/>
+<line class="i-boom" x1="453.1" y1="172.0" x2="403.3" y2="152.0"/>
+<line class="i-boom" x1="387.3" y1="132.0" x2="334.9" y2="113.3"/>
+<line class="i-boom" x1="403.3" y1="152.0" x2="353.6" y2="132.0"/>
+<line class="i-boom" x1="334.9" y1="113.3" x2="282.4" y2="94.7"/>
+<line class="i-boom" x1="353.6" y1="132.0" x2="303.8" y2="112.0"/>
+<line class="i-boom" x1="282.4" y1="94.7" x2="230.0" y2="76.0"/>
+<line class="i-boom" x1="303.8" y1="112.0" x2="254.0" y2="92.0"/>
+<line class="i-boom" x1="702.0" y1="244.0" x2="652.2" y2="252.0"/>
+<line class="i-boom" x1="652.2" y1="252.0" x2="597.1" y2="206.7"/>
+<line class="i-boom" x1="597.1" y1="206.7" x2="552.7" y2="212.0"/>
+<line class="i-boom" x1="552.7" y1="212.0" x2="492.2" y2="169.3"/>
+<line class="i-boom" x1="492.2" y1="169.3" x2="453.1" y2="172.0"/>
+<line class="i-boom" x1="453.1" y1="172.0" x2="387.3" y2="132.0"/>
+<line class="i-boom" x1="387.3" y1="132.0" x2="353.6" y2="132.0"/>
+<line class="i-boom" x1="353.6" y1="132.0" x2="282.4" y2="94.7"/>
+<line class="i-boom" x1="282.4" y1="94.7" x2="254.0" y2="92.0"/>
+<line class="i-boom" x1="702.0" y1="244.0" x2="702.0" y2="272.0"/>
+<line class="i-boom" x1="597.1" y1="206.7" x2="602.4" y2="232.0"/>
+<line class="i-boom" x1="492.2" y1="169.3" x2="502.9" y2="192.0"/>
+<line class="i-boom" x1="387.3" y1="132.0" x2="403.3" y2="152.0"/>
+<line class="i-boom" x1="282.4" y1="94.7" x2="303.8" y2="112.0"/>
+<line class="i-cable" x1="242.0" y1="84.0" x2="384.0" y2="200.0"/>
+<line class="i-cable" x1="330.0" y1="200.0" x2="438.0" y2="200.0"/>
+<line class="i-cable" x1="330.0" y1="200.0" x2="348.0" y2="240.0"/>
+<line class="i-cable" x1="438.0" y1="200.0" x2="420.0" y2="240.0"/>
+<rect class="i-load" x="348.0" y="240.0" width="72.0" height="46.0"/>
+<line class="i-corr-dark" x1="360.0" y1="244.0" x2="360.0" y2="282.0"/>
+<line class="i-corr-dark" x1="372.0" y1="244.0" x2="372.0" y2="282.0"/>
+<line class="i-corr-dark" x1="384.0" y1="244.0" x2="384.0" y2="282.0"/>
+<line class="i-corr-dark" x1="396.0" y1="244.0" x2="396.0" y2="282.0"/>
+<line class="i-corr-dark" x1="408.0" y1="244.0" x2="408.0" y2="282.0"/>
+</svg>
+    </div>
+    {# Волна 19: раньше здесь стояла бегущая строка (.marquee), в волне 16 удалена
+       вместе со stat-bar/trust-bar. Восстанавливать карусель не стали: на первом
+       экране «статус на сегодня» движущийся текст мешает считывать факт с одного
+       взгляда — тот же принцип, что у виджета статуса. Вместо неё статичная
+       hazard-лента с двумя фактами, которые уже были в тексте, и координатами
+       источника из блока «Заявка» ниже. #}
+    <div class="port-band__strip">
+      <span class="port-band__fact"><b>326</b> дней в году — навигация без ледоколов в Лужской губе</span>
+      <span class="port-band__fact"><b>Круглогодичный</b> объект: сезонный дорожный режим на него не смотрит</span>
+    </div>
+   </div>
+    <p class="port-band__cap">Порт Усть-Луга живёт круглогодично, а дорога к нему — нет: портовая площадка чаще всего без твёрдого покрытия, отсюда и гусеничный ход на иллюстрации.</p>
+  </div>
+
+  {# Волна 126: 2 фото-карточки парка (гусеничный + башенный — те же два класса,
+     для которых на страницах моделей уже есть свободно лицензированное фото;
+     для автокрана Ивановец КС-55717К-1 такого фото нет — см. /park/, «Что
+     смотреть на странице модели»). .park-card--photo — модификатор поверх
+     существующего .park-card (Волна 23), первый тилт-механизм сайта. #}
+  <section class="section wrap" id="tehnika-vblizi">
+    <div class="section-head">
+      <span class="eyebrow">Парк техники</span>
+      <h2>Два класса вблизи</h2>
+      <p>Гусеничный ход против грунта и щебня, рельсовый путь против многолетней стройки — разница видна уже на фото. Третий класс, автокран, разобран без карточки: свободно лицензированного фото модели Ивановец КС-55717К-1 у нас нет, только чертёж.</p>
+    </div>
+    <div class="park-grid park-grid--photo">
+      <a class="park-card park-card--photo reveal" href="/park/mkg-25-01a/">
+        <picture>
+          <source srcset="/images/park/mkg-25-01a.webp" type="image/webp" />
+          <img
+            src="/images/park/mkg-25-01a.jpg"
+            width="1280"
+            height="849"
+            loading="lazy"
+            decoding="async"
+            alt="Гусеничный кран МКГ-25.01 на промышленной площадке — фото модели, не конкретная машина из нашего парка"
+          />
+        </picture>
+        <span class="park-card__type">Гусеничный кран</span>
+        <h3>МКГ-25.01А</h3>
+        <span class="park-card__spec">25 т · стрела 14,4–34,4 м</span>
+      </a>
+      <a class="park-card park-card--photo reveal" href="/park/kb-403b/">
+        <picture>
+          <source srcset="/images/park/kb-403b.webp" type="image/webp" />
+          <img
+            src="/images/park/kb-403b.jpg"
+            width="640"
+            height="480"
+            loading="lazy"
+            decoding="async"
+            alt="Башенный кран КБ-403Б с рельсовым ходом на стройке — фото модели, не конкретная машина из нашего парка"
+          />
+        </picture>
+        <span class="park-card__type">Башенный кран</span>
+        <h3>КБ-403Б</h3>
+        <span class="park-card__spec">8 т · высота до 54,7 м</span>
+      </a>
+    </div>
+    <p class="prose" style="margin-top:16px">Оба фото — иллюстрация модели, не единица нашего парка; полная атрибуция авторов и лицензий — на страницах моделей <a href="/park/mkg-25-01a/">МКГ-25.01А</a> и <a href="/park/kb-403b/">КБ-403Б</a>.</p>
+  </section>
+
+  <section class="section section--sm wrap" id="uslugi">
+    <div class="section-head">
+      <span class="eyebrow">Что можно подать</span>
+      <h2>Три ограничения — три ответа по технике</h2>
+      <p>Страницы ниже устроены не от названия машины, а от того, что мешает: лимит по осям, отсутствие твёрдого покрытия и длина колонны при доставке.</p>
+    </div>
+    <div class="uslugi-grid">
+      <a class="uslugi-card reveal" href="/uslugi/avtokran-dlya-stroyki/">
+        <span class="card-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6l9 4M4 6h5M13 10l7 2.2M20 12.2V20M9 20l1.5-6M9 20H6M13 20h4"/><circle cx="4" cy="6" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <h3>Ограничение — лимит по осям</h3>
+        <p>Сколько тонн полной массы проходит под 5 и 3 тоннами на ось при разном числе осей, и что из этого следует для стройки.</p>
+      </a>
+      <a class="uslugi-card reveal" href="/uslugi/gusenichnyy-kran-dlya-porta/">
+        <span class="card-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="16" width="14" height="4" rx="1"/><circle cx="5" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none"/><circle cx="13" cy="20" r="1.2" fill="currentColor" stroke="none"/><path d="M4 16V9l7 3M11 12l6 1.5V16"/></svg></span>
+        <h3>Ограничение — нет твёрдого покрытия</h3>
+        <p>Причал, карьер, заболоченный участок: почему сюда идёт гусеничный ход и что нужно для пропуска на терминал.</p>
+      </a>
+      <a class="uslugi-card reveal" href="/uslugi/bashennyy-kran-lo/">
+        <span class="card-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V5M6 21l6-16 6 16M4 9h16M8 13h8"/></svg></span>
+        <h3>Ограничение — колонна трейлеров</h3>
+        <p>Башенный кран едет секциями. Что можно подать, если монтаж выпадает на закрытый период, и как считается срок.</p>
+      </a>
+    </div>
+  </section>
+
+  {# Полоса-палуба: секция стоит на фоне --deck во всю ширину окна. Две такие
+     полосы на странице (расчёт и портовая панель выше) разбивают восемь
+     секций, которые до этой волны шли подряд одним листом --bg. #}
+  <section class="section band wrap" id="calculator-block">
+    <div class="section-head">
+      <span class="eyebrow">Расчёт</span>
+      <h2>Прикинуть стоимость смены</h2>
+      <p>Считает ставку за час на 8-часовую смену по типу хода и сезону. Логистика в период ограничений считается отдельно — калькулятор её не прячет в «итого».</p>
+    </div>
+    {% include "calculator.njk" %}
+  </section>
+
+  <section class="section section--lg wrap" id="order">
+    <div class="section-head">
+      <span class="eyebrow">Заявка</span>
+      <h2>Назвать дату и адрес</h2>
+      <p>Двух этих данных достаточно, чтобы сказать, действует ли ограничение на вашем плече и что под него проходит.</p>
+    </div>
+    <form class="order-form" id="order-form">
+      <p class="order-form__hint">Звёздочкой (<span class="order-form__req">*</span>) отмечены обязательные поля. Перезвоним и уточним площадку, вес груза и дату.</p>
+      <div class="order-form__field">
+        <label for="order-name">Ваше имя или компания</label>
+        <input type="text" id="order-name" name="name" autocomplete="name" placeholder="Иван / ООО «Ромашка»" />
+      </div>
+      <div class="order-form__field">
+        <label for="order-phone">Телефон <span class="order-form__req" aria-hidden="true">*</span></label>
+        <input type="tel" id="order-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="+7 (900) 000-00-00" required aria-describedby="order-phone-error" />
+        <p class="order-form__error" id="order-phone-error" hidden></p>
+      </div>
+      <div class="order-form__field">
+        <label for="order-district">Район или адрес объекта</label>
+        <input type="text" id="order-district" name="district" autocomplete="address-level2" placeholder="Кингисеппский район, Усть-Луга" />
+      </div>
+      {# Волна 35: honeypot против спам-ботов — визуально скрыт классом .hp-field
+         (css/main.css) и от скринридеров через aria-hidden, но остаётся в DOM
+         и в payload на fetch (обработчик заявок тихо игнорирует непустое значение). #}
+      <div class="order-form__field hp-field" aria-hidden="true">
+        <label for="order-website">Оставьте это поле пустым</label>
+        <input type="text" id="order-website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
+      {# Согласие: обязательное, НЕ предзаполненное (никакого checked), с двумя
+         РАЗДЕЛЬНЫМИ ссылками — на политику и на согласие. Один общий линк на
+         «политику и согласие» здесь не годится: с 01.09.2025 это два документа,
+         и посетитель должен иметь возможность прочитать каждый отдельно. #}
+      <div class="order-form__consent">
+        <input type="checkbox" id="order-consent" name="consent" required aria-describedby="order-consent-error" />
+        <label for="order-consent">Согласен на обработку персональных данных на условиях <a href="/soglasie-na-obrabotku-personalnyh-dannyh/">согласия</a> и ознакомлен с <a href="/politika-obrabotki-personalnyh-dannyh/">политикой обработки персональных данных</a></label>
+      </div>
+      <p class="order-form__error" id="order-consent-error" hidden></p>
+      <button class="btn" type="submit">Отправить заявку →</button>
+      <p class="order-form__status" id="order-status" role="status"></p>
+      <noscript>
+        <p class="order-form__hint">Форма отправляется скриптом — если JavaScript отключён, позвоните: <a href="tel:+79647243176" style="color:var(--accent)">+7 (964) 724-31-76</a>.</p>
+      </noscript>
+    </form>
+
+    {% set sourceKeys = ["order", "ustLugaPort", "heroVideoCraneSilhouette"] %}
+    {% set sourcesMore = [{ href: "/kalendar/", label: "календаре ограничений" }] %}
+    {% set sourcesNote = "Сроки объявляются заново каждый сезон — перед выездом сверяем действующий приказ, а не эту страницу." %}
+    {% include "sources.njk" %}
+  </section>
+</main>
+{# Волна 35: логика формы (валидация телефона + отправка заявки) переехала
+   в /js/lead-form.js — см. app/src/js/lead-form.js. Раньше здесь был инлайн-скрипт,
+   который только валидировал телефон и честно писал «приём заявок не подключён». #}

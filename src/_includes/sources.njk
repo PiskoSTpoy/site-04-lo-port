@@ -1,0 +1,43 @@
+{# Волна 20 — единый блок «Источники, проверено».
+   Раньше на 20 страницах сайта источники были россыпью в прозе — разной
+   вёрсткой абзаца и, что хуже, слегка разной формулировкой одной и той же
+   нормы на каждой странице. Теперь текст норм живёт один раз в
+   src/_data/sources.js (плюс приказ — в src/_data/season.js, см. комментарий
+   там), а страница передаёт только ключи.
+
+   Ожидания от вызывающего шаблона (объявить через {% set %} перед include):
+     sourceKeys   — массив ключей из _data/sources.js. Ключ "order" особый:
+                    рендерится из season.order, а не из каталога, — это и есть
+                    единственный источник правды для приказа (Волна 20, п. 2).
+     sourcesMore  — необязательно, массив {href, label}: страница, где стоит
+                    полный список источников по теме, чтобы не разворачивать
+                    здесь тот же бандл повторно (урок Волны 17 — не дублировать
+                    целиком блок хаба на странице детали).
+     sourcesNote  — необязательно, строка: оговорка под списком, специфичная
+                    для этой страницы (не текст нормы, поэтому не в каталоге).
+   После рендера sourceKeys/sourcesMore/sourcesNote остаются в контексте
+   Nunjucks — следующий include на той же странице должен переобъявить их
+   заново (или обнулить), иначе унаследует прошлые значения. #}
+{% if sourceKeys and sourceKeys.length %}
+<aside class="sources" aria-label="Источники">
+  <p class="sources__head">Источники · проверено {{ season.checked }}</p>
+  <ul class="sources__list">
+    {% for key in sourceKeys %}
+      {% if key == "order" %}
+        <li><a href="{{ season.order.url }}" target="_blank" rel="noopener">{{ season.order.authority }} — приказ {{ season.order.number }} от {{ season.order.date }}, временные ограничения движения {{ season.year }} года (весенний и летний периоды)</a></li>
+      {% else %}
+        {% set s = sources[key] %}
+        {% if s %}
+        <li>{% if s.href %}<a href="{{ s.href }}" target="_blank" rel="noopener">{{ s.text }}</a>{% else %}<span>{{ s.text }}</span>{% endif %}</li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+  {% if sourcesMore and sourcesMore.length %}
+  <p class="sources__more">Подробный разбор и остальные источники по теме —
+    {% for m in sourcesMore %}<a href="{{ m.href }}">{{ m.label }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.
+  </p>
+  {% endif %}
+  {% if sourcesNote %}<p class="sources__note">{{ sourcesNote }}</p>{% endif %}
+</aside>
+{% endif %}

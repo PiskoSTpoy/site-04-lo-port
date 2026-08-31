@@ -1,0 +1,25 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+{#- Карта сайта строится из коллекции страниц, а не пишется руками.
+    Прежний ручной src/public/sitemap.xml дважды за историю сайта отставал от
+    дерева страниц (см. content-plan.md) — генерация закрывает этот класс дефекта.
+
+    lastmod = mtime исходного .njk конкретной страницы (фильтр sourceMtime в
+    eleventy.config.js), а не дата сборки: одна и та же дата у всех URL — это
+    сигнал, который Google обесценивает по всему домену. Правка общего шаблона
+    НЕ двигает lastmod страниц: изменился каркас, а не содержание страницы.
+
+    /404.html в карту не идёт: страница ошибки не предназначена для индексации. -#}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for item in collections.all %}
+{%- set p = item.data.path %}
+{%- if p and p != "/404.html" %}
+{%- set meta = sitemapMeta.BY_PATH[p] or sitemapMeta.DEFAULT %}
+{%- set lm = item.inputPath | sourceMtime %}
+  <url><loc>https://kran-lo.example{{ p }}</loc>{% if lm %}<lastmod>{{ lm }}</lastmod>{% endif %}<changefreq>{{ meta.changefreq }}</changefreq><priority>{{ meta.priority }}</priority></url>
+{%- endif %}
+{%- endfor %}
+</urlset>

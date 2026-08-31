@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}" />
+  <link rel="canonical" href="https://kran-lo.example{{ path }}" />
+  {# Фавиконки объявлены явно: без <link rel="icon"> браузер сам дёргает
+     /favicon.ico и пишет 404 в консоль — это и был единственный источник
+     ошибки консоли на всех 40 страницах. SVG для современных браузеров,
+     PNG 32x32 и настоящий ICO — для остальных и для закладок. #}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="alternate icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  {# display: browser — сайт остаётся сайтом, а не притворяется приложением:
+     манифест нужен ради иконки и цвета плитки, а не ради standalone-режима. #}
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#1A1A1A" />
+  {# Шрифты локальные: сторонний origin убран из критического пути рендера.
+     Preload — только два кириллических файла, которые нужны первому экрану:
+     Cuprum (заголовки, вариативный 400-700) и Scada 400 (основной текст).
+     Bold-начертание Scada и латиница подтягиваются по мере надобности. #}
+  <link rel="preload" href="/fonts/cuprum-cyrillic-var-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/scada-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{ title }}" />
+  <meta property="og:description" content="{{ description }}" />
+  <meta property="og:url" content="https://kran-lo.example{{ path }}" />
+  <meta property="og:site_name" content="КРАН-ЛО" />
+  <meta property="og:locale" content="ru_RU" />
+  {# twitter:card=summary_large_image объявляли и раньше, но og:image не было —
+     карточка ссылки собиралась из чего придётся. Изображение одно на весь сайт
+     и намеренно без цифр: тираж под каждую страницу означал бы либо шаблонную
+     подстановку заголовка, либо цифры, которые устареют раньше картинки.
+     Собирается scripts/make-og.mjs из живой страницы, чтобы шрифт был настоящий. #}
+  <meta property="og:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="КРАН-ЛО, Ленинградская область: сначала дата и дорога, потом модель" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <link rel="stylesheet" href="/css/main.css" />
+  {# Один узел организации на страницу, а не два. Раньше здесь стояли LocalBusiness
+     с @id «#business» и отдельный Organization с @id «#organization» — для парсера
+     это два РАЗНЫХ юридических лица на одной странице: одно значилось поставщиком
+     услуг (provider у Service), второе — издателем статей (publisher у Article).
+     LocalBusiness сам является подтипом Organization, поэтому узел один, и ссылки
+     по @id «#organization» из Service и Article ведут теперь в него же. #}
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://kran-lo.example/#organization","name":"КРАН-ЛО","telephone":"+79647243176","email":"info@kran-lo.example","url":"https://kran-lo.example","priceRange":"₽₽","address":{"@type":"PostalAddress","addressRegion":"Ленинградская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":59.6636,"longitude":28.3372},"areaServed":"Ленинградская область","openingHours":"Mo-Su 00:00-24:00"}</script>
+  {# WebSite описывает САЙТ ЦЕЛИКОМ, поэтому размечается только на главной.
+     На всех 42 страницах он повторял одно и то же утверждение 42 раза —
+     ни одного дополнительного смысла, зато 42 кандидата на «главную». #}
+  {% if path == "/" %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://kran-lo.example/#website","name":"КРАН-ЛО","url":"https://kran-lo.example","inLanguage":"ru-RU","publisher":{"@id":"https://kran-lo.example/#organization"}}</script>{% endif %}
+  {% if ldExtra %}{% for block in ldExtra %}<script type="application/ld+json">{{ block | safe }}</script>{% endfor %}{% endif %}
+</head>
+<body>
+  <!-- .reveal class is written statically in markup and hidden via CSS until JS adds .is-visible.
+       Without working JS that never happens — this noscript override keeps the content visible
+       for no-JS users and non-JS-executing crawlers (found in a post-Волна-10 a11y audit). -->
+  <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+  <header class="nav">
+    <div class="nav__row wrap">
+      <a class="brand" href="/">КРАН<span>-ЛО</span></a>
+      <nav class="nav__links" aria-label="Основная навигация">
+        <a href="/kalendar/"{% if path == "/kalendar/" %} aria-current="page"{% endif %}>Календарь</a>
+        <a href="/marshruty/"{% if path == "/marshruty/" %} aria-current="page"{% endif %}>Маршруты</a>
+        <a href="/#uslugi">Что подаём</a>
+        <a href="/park/"{% if path == "/park/" %} aria-current="page"{% endif %}>Парк техники</a>
+        <a href="/keysy/"{% if path == "/keysy/" %} aria-current="page"{% endif %}>Примеры задач</a>
+        <a href="/documents/"{% if path == "/documents/" %} aria-current="page"{% endif %}>Допуски</a>
+        <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+      </nav>
+      <a class="nav__order-btn" href="/#order">Заказать кран</a>
+      {# Волна 12: мобильное меню. <details> — рабочее раскрытие БЕЗ JS,
+         нативная клавиатура и состояние expanded у <summary>. enhance.js только
+         добавляет закрытие по Esc / клику вне панели. #}
+      <details class="nav__mobile" data-nav-mobile>
+        <summary class="nav__mobile-btn">
+          <span class="nav__mobile-bars" aria-hidden="true"></span>Меню
+        </summary>
+        <nav class="nav__mobile-panel" aria-label="Мобильная навигация">
+          <a href="/kalendar/"{% if path == "/kalendar/" %} aria-current="page"{% endif %}>Календарь ограничений</a>
+          <a href="/marshruty/"{% if path == "/marshruty/" %} aria-current="page"{% endif %}>Маршруты подачи</a>
+          <a href="/#uslugi">Что подаём</a>
+          <a href="/park/"{% if path == "/park/" %} aria-current="page"{% endif %}>Парк техники</a>
+          <a href="/keysy/"{% if path == "/keysy/" %} aria-current="page"{% endif %}>Примеры задач</a>
+          <a href="/documents/"{% if path == "/documents/" %} aria-current="page"{% endif %}>Допуски</a>
+          <a href="/blog/"{% if path == "/blog/" %} aria-current="page"{% endif %}>Блог</a>
+          <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <div id="main-content" tabindex="-1">{{ content | safe }}</div>
+  <footer class="footer wrap">
+    <span>© 2026 КРАН-ЛО · kran-lo.example</span>
+    {# Обе правовые ссылки — в подвале, то есть на КАЖДОЙ странице сайта, а не
+       только рядом с формой: политика должна быть доступна отовсюду, а согласие
+       с 01.09.2025 живёт отдельным документом и ссылкой на него же. #}
+    <nav class="footer__legal" aria-label="Контакты и правовые документы">
+      <a href="/kontakty/">Контакты</a>
+      <a href="/politika-obrabotki-personalnyh-dannyh/">Политика обработки ПД</a>
+      <a href="/soglasie-na-obrabotku-personalnyh-dannyh/">Согласие на обработку ПД</a>
+    </nav>
+    <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+  </footer>
+  {# Волна 12: закреплённая панель действий — только на мобильных (max-width:760px).
+     Две обычные ссылки: работает без JS. Компенсирующий padding-bottom у body
+     (--mcta-h) не даёт панели перекрыть футер. #}
+  <div class="mcta" role="region" aria-label="Быстрая связь">
+    <a class="mcta__btn mcta__btn--order" href="/#order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V6l9 4M4 6h5M13 10l7 2.2M20 12.2V20M9 20l1.5-6"/></svg>
+      Заказать кран
+    </a>
+    <a class="mcta__btn mcta__btn--call" href="tel:+79647243176">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 12l5 2v4a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
+      Позвонить
+    </a>
+  </div>
+  <script src="/js/calculator.js" defer></script>
+  {# season-logic грузится ПЕРЕД status.js: defer сохраняет порядок выполнения. #}
+  <script src="/js/season-logic.js" defer></script>
+  <script src="/js/status.js" defer></script>
+  <script src="/js/enhance.js" defer></script>
+  {# Волна 126: самоограничивается через "if (!cards.length) return" —
+     на страницах без .park-card--photo (сейчас это только главная) файл
+     ничего не делает, как и остальные фиче-скрипты ниже. #}
+  <script src="/js/tilt.js" defer></script>
+  {# Волна 35: глобально, как и остальные фиче-скрипты выше — самоограничивается
+     через "if (!form) return", форма #order-form есть только на главной. #}
+  <script src="/js/lead-form.js" defer></script>
+</body>
+</html>

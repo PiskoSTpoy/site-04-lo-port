@@ -1,0 +1,103 @@
+<div class="calc box" id="calculator">
+  <div class="calc__progress" aria-hidden="true">
+    <span class="calc__progress-step is-active" data-step-dot="1"></span>
+    <span class="calc__progress-step" data-step-dot="2"></span>
+    <span class="calc__progress-step" data-step-dot="3"></span>
+  </div>
+  <p class="calc__progress-label" id="calc-progress-label" aria-live="polite">Шаг 1 из 3 · Тип техники</p>
+
+  <div class="calc__step is-active" data-step="1">
+    <div class="calc__field">
+      <span class="calc__question" id="calc-q-type">Какая техника нужна?</span>
+      <div class="calc__options" role="group" aria-labelledby="calc-q-type">
+        <button type="button" class="calc__option" data-set-type="avtokran" aria-pressed="false">
+          <span class="calc__option-title">Автокран</span>
+          <span class="calc__option-sub">от 4 000 ₽/час</span>
+        </button>
+        <button type="button" class="calc__option" data-set-type="gusenichnyy" aria-pressed="false">
+          <span class="calc__option-title">Гусеничный кран</span>
+          <span class="calc__option-sub">от 6 000 ₽/час</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc__step" data-step="2">
+    <div class="calc__field">
+      <span class="calc__question" id="calc-q-season">Выезд в период весенней просушки дорог?</span>
+      <div class="calc__options" role="group" aria-labelledby="calc-q-season">
+        <button type="button" class="calc__option" data-set-season="1" aria-pressed="false">
+          <span class="calc__option-title">Да, март–апрель</span>
+          <span class="calc__option-sub">учтём ограничение маршрута</span>
+        </button>
+        <button type="button" class="calc__option" data-set-season="0" aria-pressed="false">
+          <span class="calc__option-title">Нет, другой период</span>
+          <span class="calc__option-sub">стандартный выезд</span>
+        </button>
+      </div>
+    </div>
+    <button type="button" class="calc__back" data-back>← Назад</button>
+  </div>
+
+  <div class="calc__step" data-step="3">
+    <span class="calc__question">Готово — вот расчёт</span>
+    <p id="calc-season-note" class="calc__note" style="display:none">
+      В этот период на региональных дорогах Ленобласти действует предел осевой нагрузки: 5 т по асфальтобетону, 3 т по гравию и грунту.
+      Уточняем маршрут и необходимость спецпропуска при согласовании заявки — подробнее в статье о просушке дорог.
+    </p>
+    <div class="calc__result">
+      <span class="calc__result-label">Формула: ставка/час × 8 часов смены</span>
+      <b id="calc-total">от 32 000 ₽</b>
+    </div>
+
+    {# Границы расчёта. Раньше «что считается отдельно» было рассыпано абзацами
+       по страницам услуг, а рядом с самой цифрой не стояло — заказчик видел
+       «от 32 000 ₽» и достраивал остальное сам. Ни одного нового условия здесь
+       не появилось: обе колонки собраны из того, что уже написано на
+       /uslugi/avtokran-dlya-stroyki/ и /uslugi/gusenichnyy-kran-dlya-porta/. #}
+    <div class="calc__scope">
+      <div class="calc__scope-col">
+        <span class="calc__scope-head">Что входит в сумму</span>
+        <ul>
+          <li>смена 8 часов — это и есть минимальный заказ, меньше не считаем;</li>
+          <li>работа крана на площадке с нашим оператором.</li>
+        </ul>
+      </div>
+      <div class="calc__scope-col">
+        <span class="calc__scope-head">Что не входит и считается отдельно</span>
+        <ul>
+          <li>перевозка на трале и спецразрешение на тяжеловес, если маршрут их требует;</li>
+          <li>удалённость объекта — подача и перегон техники к площадке;</li>
+          <li>работы в выходные;</li>
+          <li>логистика в период сезонных ограничений: зависит от плеча, а не от крана.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="calc__disclaimer">
+      Расчёт ориентировочный и <strong>не является публичной офертой</strong> (ст. 437 ГК РФ):
+      итоговая сумма зависит от площадки, маршрута и даты и называется при согласовании заявки.
+      Ставки в расчёте актуальны на <time datetime="{{ rates.updatedIso }}">{{ rates.updatedHuman }}</time>.
+    </p>
+    {# Волна 12 (сетевая сверка): было href="#order" — калькулятор встроен в 7 страниц,
+       а секция id="order" есть только на главной: на 6 из 7 кнопка не делала ничего. #}
+    <a class="btn calc__cta" href="/#order">Отправить заявку с этим расчётом →</a>
+    <div class="calc__step3-nav">
+      <button type="button" class="calc__back" data-back>← Изменить сезон</button>
+      <button type="button" class="calc__restart" data-restart>↺ Начать заново</button>
+    </div>
+  </div>
+
+  <!-- Реальные поля, которые считает calculator.js — управляются кнопками визарда выше.
+       Весь блок скрыт от скринридеров целиком (aria-hidden на контейнере): иначе подписи
+       остались бы в дереве доступности как «висячие» лейблы к скрытым контролам.
+       Внутри нет ничего фокусируемого (tabindex=-1), поэтому анти-паттерна нет. -->
+  <div class="sr-only" aria-hidden="true">
+    <label for="calc-type">Тип техники</label>
+    <select id="calc-type" tabindex="-1">
+      <option value="avtokran" selected>Автокран — от 4 000 ₽/час</option>
+      <option value="gusenichnyy">Гусеничный кран — от 6 000 ₽/час</option>
+    </select>
+    <label for="calc-season">Выезд в период весенней просушки дорог (март–апрель)</label>
+    <input type="checkbox" id="calc-season" tabindex="-1" />
+  </div>
+</div>

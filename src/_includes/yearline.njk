@@ -1,0 +1,17 @@
+{# Годовая полоса-таймлайн: 12 ячеек, режим каждого месяца цветом и текстом.
+   Список, а не картинка — читается скринридером и попадает в индекс. #}
+<ol class="yearline" aria-label="Режим дорожных ограничений Ленинградской области по месяцам {{ season.year }} года">
+  {% for m in season.months %}
+  <li class="yearline__cell yearline__cell--{{ m.regime }}{% if season.nowYear == season.year and season.nowMonth == m.n %} is-now{% endif %}"
+      data-month="{{ m.n }}"{% if season.nowYear == season.year and season.nowMonth == m.n %} aria-current="date"{% endif %}>
+    <span class="yearline__month">{{ m.name }}</span>
+    <span class="yearline__regime">{% if m.regime == "clear" %}свободно{% elif m.regime == "spring" %}просушка{% elif m.regime == "mixed" %}перелом{% else %}жара{% endif %}</span>
+  </li>
+  {% endfor %}
+</ol>
+<p class="yearline__legend">
+  <span class="yearline__key yearline__key--clear"></span> ограничений по осям нет ·
+  <span class="yearline__key yearline__key--mixed"></span> месяц с переломом режима ·
+  <span class="yearline__key yearline__key--summer"></span> температурное окно ·
+  подсвечен текущий месяц
+</p>

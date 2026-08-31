@@ -1,0 +1,97 @@
+---
+layout: layout.njk
+---
+{# Волна 11: общий layout статей блога. #}
+{# Ожидания к front-matter статьи:
+     title, description, path, ldExtra, crumbLabel, eyebrow, ctaHref, ctaText,
+     faqEntries (список {q, a}), sourceKeys (массив ключей _data/sources.js,
+     см. _includes/sources.njk), sourcesMore и sourcesNote — необязательные,
+     туда же. #}
+{% set _h2s = content | extractH2s %}
+{% set _bodyWithIds = content | injectH2Ids %}
+{% set _hasToc = _h2s.length >= 3 %}
+{% set _relatedTop = collections.blogPosts | excludePath(path) | head(3) %}
+
+<div class="reading-progress" aria-hidden="true"><span class="reading-progress__bar"></span></div>
+
+<main>
+  <nav class="crumbs wrap" aria-label="Хлебные крошки">
+    <a href="/">Главная</a><span>/</span><a href="/blog/">Блог</a><span>/</span><span>{{ crumbLabel }}</span>
+  </nav>
+
+  <div class="article-shell wrap">
+    {% if _hasToc %}
+    <aside class="toc toc--desktop" aria-label="Содержание статьи">
+      <div class="toc__title">Содержание</div>
+      <ol class="toc__list">
+        {% for h in _h2s %}
+        <li><a href="#{{ h.id }}" data-toc-link="{{ h.id }}">{{ h.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </aside>
+    {% endif %}
+
+    <article class="article-shell__article prose">
+      {% if eyebrow %}<span class="eyebrow">{{ eyebrow }}</span>{% endif %}
+      <h1 class="article-shell__h1">{{ title }}</h1>
+      <p class="article-shell__byline">Логистическая служба КРАН-ЛО · обновлено в 2026 году</p>
+
+      {% if _hasToc %}
+      <details class="toc toc--mobile">
+        <summary>Содержание статьи · {{ _h2s.length }} разделов</summary>
+        <ol class="toc__list">
+          {% for h in _h2s %}
+          <li><a href="#{{ h.id }}" data-toc-link="{{ h.id }}">{{ h.text }}</a></li>
+          {% endfor %}
+        </ol>
+      </details>
+      {% endif %}
+
+      {{ _bodyWithIds | safe }}
+
+      {# Волна 16: аккордеон на <details> заменён открытым списком «вопрос — ответ».
+         Ответы видны сразу: и человеку меньше кликов, и требование Google к видимому
+         контенту разметки FAQPage выполняется без раскрытия. #}
+      {% if faqEntries and faqEntries.length %}
+      <div style="margin-top:44px">
+        <h2 id="chastye-voprosy">Частые вопросы</h2>
+        <dl class="qa">
+          {% for item in faqEntries %}
+          <dt>{{ item.q }}</dt>
+          <dd>{{ item.a | safe }}</dd>
+          {% endfor %}
+        </dl>
+      </div>
+      {% endif %}
+
+      {% include "sources.njk" %}
+    </article>
+  </div>
+
+  {% if _relatedTop.length %}
+  <section class="section wrap related-posts" aria-labelledby="related-posts-title">
+    <div class="section-head">
+      <span class="eyebrow">Читайте также</span>
+      <h2 id="related-posts-title">Другие материалы блога</h2>
+    </div>
+    <div class="related-grid">
+      {% for post in _relatedTop %}
+      <a class="related-card box" href="{{ post.data.path }}">
+        <span class="related-card__tag">Статья</span>
+        <h3 class="related-card__title">{{ post.data.title }}</h3>
+        <p class="related-card__desc">{{ post.data.description }}</p>
+        <span class="related-card__more">Читать →</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if ctaHref %}
+  <section class="section wrap">
+    <a class="btn" href="{{ ctaHref }}">{{ ctaText or "Оставить заявку →" }}</a>
+  </section>
+  {% endif %}
+</main>
+
+<script src="/js/blog.js" defer></script>

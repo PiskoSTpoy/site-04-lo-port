@@ -1,0 +1,37 @@
+{# Виджет «статус ограничений на сегодня».
+   Рендерится на дату сборки, /js/status.js пересчитывает его на дату пользователя.
+   data-state задаёт цвет полосы: spring | summer | clear | stale.
+   Волна 19: добавлен hazard-стенсил индикатор .status-flag (стенсил-плашка +
+   диагональная штриховка вместо generic красного/зелёного кружка) и текстовые
+   плашки-«штампы» .status-panel__badge — обе реагируют на data-state чистым CSS,
+   поэтому пересчёт status.js на клиентское «сегодня» их не касается. #}
+<div class="status-panel" data-status-panel data-state="{{ season.today.state }}">
+  <div class="status-panel__top">
+    <div class="status-flag" aria-hidden="true"></div>
+    <div class="status-panel__top-text">
+      {# statusRailAbove — страница уже показала дату и плашку состояния в рейле
+         hero-панели (главная, Волна 128). Повторять их в виджете нельзя: на
+         телефоне обе пары попадают в один экран и читаются как сбой вёрстки.
+         Остаётся ссылка на приказ, которой в рейле нет. #}
+      <div class="status-panel__head">
+        {% if not statusRailAbove %}<span class="status-panel__today" data-status-date>{{ season.today.dateHuman }}</span>{% endif %}
+        <span class="status-panel__src">приказ {{ season.order.number }} от {{ season.order.date }}</span>
+      </div>
+      {% if not statusRailAbove %}
+      <p class="status-panel__state">
+        <span class="status-panel__badge status-panel__badge--spring">Ограничение действует</span>
+        <span class="status-panel__badge status-panel__badge--summer">Действует по погоде</span>
+        <span class="status-panel__badge status-panel__badge--clear">Ограничения нет</span>
+        <span class="status-panel__badge status-panel__badge--stale">Приказ не сверен</span>
+      </p>
+      {% endif %}
+    </div>
+  </div>
+  <p class="status-panel__headline" data-status-headline>{{ season.today.headline }}</p>
+  <p class="status-panel__limit" data-status-limit>{{ season.today.limit }}</p>
+  <p class="status-panel__detail" data-status-detail>{{ season.today.detail }}</p>
+  <p class="status-panel__foot">
+    Считается по датам приказа {{ season.year }} года, проверенным {{ season.checked }}. Сроки объявляются заново каждый сезон —
+    <a href="{{ season.order.url }}" target="_blank" rel="noopener">первоисточник</a>{% if page.url != "/kalendar/" %}, помесячно — в <a href="/kalendar/">календаре</a>{% endif %}.
+  </p>
+</div>
