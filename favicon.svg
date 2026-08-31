@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="КРАН-ЛО">
+  <!-- Портовый hazard-код сайта в 32 пикселях: сигнальная диагональная штриховка
+       (тот же приём, что у .status-flag и .rs-hazard-* в вёрстке) и силуэт стрелы
+       с грузом. Никаких букв: на 16px кириллица в фавиконе неразличима. -->
+  <rect width="32" height="32" fill="#1A1A1A"/>
+  <path d="M0 26h32v6H0z" fill="#F5A623"/>
+  <path d="M-6 32 6 20M2 32 14 20M10 32 22 20M18 32 30 20M26 32 38 20"
+        stroke="#1A1A1A" stroke-width="4" fill="none"/>
+  <path d="M4 26V6h3v20z" fill="#F5A623"/>
+  <path d="M5.5 6h22v3h-22z" fill="#F5A623"/>
+  <path d="M25 9v5" stroke="#F2F0EA" stroke-width="2"/>
+  <rect x="21" y="14" width="8" height="6" fill="#F2F0EA"/>
+</svg>

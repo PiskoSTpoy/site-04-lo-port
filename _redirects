@@ -1,0 +1,23 @@
+# Волна 14 — дедупликация: удалены страницы без собственного содержания.
+# Волна 16 — структурное расхождение: раздел /geo/ заменён на /marshruty/ (плечи подачи
+# вместо районов), /faq/ свёрнут в /kalendar/. Внутренние 301 ведут на страницу,
+# которая отвечает на тот же вопрос заказчика, а не на главную.
+# Волна 17 — из файла убраны четыре 301 на чужой домен. Постоянный редирект с одного
+# домена на другой — техническое заявление «сайты под общим управлением»; для площадок,
+# которые представляются независимыми компаниями разных регионов, это ложное заявление.
+# Все адресаты теперь внутренние.
+# Формат Netlify/Cloudflare Pages: <откуда> <куда> <код>
+
+# --- Волна 16: перестройка разделов ---
+/geo/kingiseppskiy/                         /marshruty/ust-luga-port/                                                        301
+/geo/volosovskiy/                           /marshruty/karery-volosovo/                                                      301
+/geo/gatchinskiy/                           /marshruty/asfaltobeton-gatchina-lomonosov/                                      301
+/geo/lomonosovskiy/                         /marshruty/asfaltobeton-gatchina-lomonosov/                                      301
+/geo/                                       /marshruty/                                                                      301
+/faq/                                       /kalendar/                                                                       301
+
+# --- Волна 14 + 17: удалённые страницы уходят на свои преемники ---
+/documents/dogovor-arendy-krana/            /documents/                                                                      301
+/documents/akt-vypolnennyh-rabot/           /documents/                                                                      301
+/documents/dokumenty-na-tehniku-i-operatora/ /documents/                                                                     301
+/blog/klassy-avtokranov-po-gruzopodemnosti/ /uslugi/avtokran-dlya-stroyki/                                                   301

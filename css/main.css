@@ -1,0 +1,2169 @@
+:root {
+  /* Палитра дизайн-кода не меняется: сталь + сигнальный жёлтый.
+     Добавлена только ОДНА недостающая ступень — «палуба» между грунтом (--bg)
+     и панелью (--surface): без неё вся страница была одним листом #1A1A1A,
+     и шесть секций подряд отличались друг от друга ровно ничем. */
+  --bg: #1A1A1A;
+  --deck: #212121;
+  --ink: #F2F0EA;
+  --accent: #F5A623;
+  --accent-2: #6B7280;
+  --line: #3A3A3A;
+  --surface: #232323;
+  /* Ступени текста — те же значения, что были рассыпаны по файлу хексами;
+     теперь у них есть имена, и правка идёт в одном месте. */
+  --ink-2: #D8D5CC;
+  --ink-3: #B8B5AC;
+  --ink-4: #9AA0A6;
+  --maxw: 1180px;
+  --pad: clamp(18px, 5vw, 60px);
+
+  /* ── ЛЕСТНИЦА КЕГЛЕЙ ─────────────────────────────────────────────────────
+     До этой волны на главной жило 24 разных кегля, из них 14 в диапазоне
+     11.9–15.6px с шагом 0.5–3 % — то есть неразличимых на глаз, но по-разному
+     ломающих строку. Шесть ступеней ниже покрывают всё, что не заголовок;
+     шаг между соседними 7–14 %, то есть его видно. Корень 17px (см. html). */
+  --fs-2xs: .72rem;   /* 12.2px — маркировка: бейджи, теги, шапки таблиц, лимиты */
+  --fs-xs:  .82rem;   /* 13.9px — служебные подписи, крошки, подписи полей */
+  --fs-sm:  .88rem;   /* 15.0px — вторичный текст, подписи под графикой, меню */
+  --fs-md:  .94rem;   /* 16.0px — плотный текст: таблицы, ответы, контролы */
+  --fs-base: 1rem;    /* 17.0px — основной абзац */
+  --fs-lg:  1.16rem;  /* 19.7px — заголовок карточки */
+  /* Лид — единственный текстовый кегль, которому нужен clamp: на 320px
+     19.7px в колонке 284px дают ~14 знаков в строке, то есть лесенку. */
+  --fs-lead: clamp(1rem, .9rem + .45vw, 1.16rem);
+  --fs-xl:  1.34rem;  /* 22.8px — заголовок крупной карточки */
+
+  /* ── ВЕРТИКАЛЬНЫЙ РИТМ ───────────────────────────────────────────────────
+     Было одно значение на все секции (76.8px сверху и снизу на десктопе),
+     из-за чего шесть блоков подряд читались как один бесконечный столбец. */
+  --sect-y: clamp(44px, 6vw, 84px);
+  --sect-y-lg: clamp(58px, 8.2vw, 116px);
+  --sect-y-sm: clamp(30px, 3.8vw, 52px);
+  --h2-gap: clamp(30px, 3.2vw, 38px);   /* заменяет пять рукописных 32/36/38px */
+
+  /* Экспоненциальный выкат: движение начинается быстро и садится мягко —
+     ближе к тому, как останавливается тяжёлая механика, чем линейный ease. */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 420ms;
+
+  /* Тёмная схема объявлена явно: без color-scheme браузер рисует СВОИ
+     поверхности (список <select>, скроллбары, встроенные контролы) светлыми
+     поверх почти чёрного сайта. */
+  color-scheme: dark;
+  accent-color: var(--accent);
+  scrollbar-color: var(--accent-2) var(--bg);
+
+  /* Заголовочная — Cuprum (ParaType), узкая и жёсткая: короткие заголовки
+     капслоком и предупреждающие полосы. Вариативная 400-700, 900 у неё нет. */
+  --display: 'Cuprum', 'Arial Narrow', Arial, sans-serif;
+  /* Текстовая — Scada (ParaType), рисовалась для экранов диспетчерских:
+     шире Cuprum и шире прежней Roboto Condensed, читается спокойнее. */
+  --sans: 'Scada', 'Segoe UI', Arial, sans-serif;
+}
+/* Поверхности, которые рисует браузер, а не мы: выделение, каретка, полоса
+   прокрутки. По умолчанию они системно-синие и не принадлежат ни одному
+   дизайн-коду — здесь они переведены на сигнальный жёлтый. */
+::selection { background: var(--accent); color: #1A1A1A; text-shadow: none; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent-2); border: 3px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+input, textarea, select { caret-color: var(--accent); }
+* { box-sizing: border-box; }
+/* --- фокус-кольцо: единое для всех интерактивных элементов, кроме тех, у кого уже есть свой видимый индикатор фокуса --- */
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+/* Цель skip-link — контейнер, а не управляющий элемент: фокус нужен для порядка
+   табуляции и озвучки, но кольцо вокруг всей страницы только сбивает с толку. */
+#main-content:focus, #main-content:focus-visible { outline: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* Волна 130. Сам .sr-only обрезан до 1px, но его ДЕТИ считают ширину по своему
+   содержимому: <select> калькулятора — по самому длинному пункту («Автокран —
+   от 4 000 ₽/час»), и его прямоугольник уходил на 490px правее окна. На экран
+   это не попадает (clip), прокрутки не даёт (scrollWidth == clientWidth), но
+   каждый инструмент, который ищет переполнение по геометрии, честно на него
+   ругается — и волна за волной проверяется одна и та же ложная тревога.
+   Контролы и их подписи ставятся в блок: у строчного элемента max-width
+   ничего не ограничивает, а блок берёт ширину обрезанного родителя. Текст
+   при этом никуда не девается — .sr-only и так прячет его clip'ом. */
+.sr-only :is(label, select, input, textarea, button) { display: block; max-width: 100%; }
+/* Волна 35: honeypot-поле формы заявки — скрыто от зрячих пользователей визуально
+   (off-screen, не display:none/type=hidden — так простые боты его не пропускают)
+   и от скринридеров (aria-hidden на обёртке в разметке), но остаётся в DOM. */
+.hp-field { position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.skip-link { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--accent); color: #1A1A1A; padding: 12px 20px; font-weight: 700; text-decoration: none; text-transform: uppercase; }
+.skip-link:focus { left: 8px; top: 8px; }
+html, body { margin: 0; padding: 0; }
+/* Якорь не должен приземляться под липкую шапку (70px + 3px рамка).
+   Для h2 статей суммарный отступ остаётся прежним: 76 + 20 = 96px, как в Волне 11. */
+/* 106.25% = 17px: x-height обеих новых гарнитур 0.500 em против 0.528 у
+   Roboto Condensed, то есть при 16px строчные были бы на 5,3% мельче прежних.
+   17 x 0.500 = 8.50px против 16 x 0.528 = 8.45px — оптический размер сохранён.
+   Ни один размер РАСКЛАДКИ в этом файле не задан в rem (проверено грепом),
+   поэтому масштабируется только текст, сетки и отступы не двигаются. */
+html { font-size: 106.25%; scroll-padding-top: 76px; }
+/* Якорей на сайте много (/#uslugi, /#order, оглавление статьи, календарь) —
+   без этого браузер телепортирует страницу и человек теряет место. */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* 1.55 вместо 1.6: корневой кегль вырос на 6.25%, и при 1.6 абсолютный шаг
+   строк ушёл бы с 25.6px на 27.2px — заметно рыхлее. 17 x 1.55 = 26.35px,
+   +3% к прежнему шагу, ровно под чуть более широкую строку Scada. */
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.55; }
+a { color: inherit; }
+/* Cuprum: ascender+descender = 1.155em, при line-height 1.1 надстрочные знаки
+   (Ё, Й) многострочного капслока садились на предыдущую строку — 1.14.
+   Трекинг .01em -> .02em: гарнитура на 9.2% уже прежней (14.01em против 15.43em
+   на одной и той же строке капслоком), место под разрядку освободилось. */
+h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 700; line-height: 1.14; text-transform: uppercase; letter-spacing: .02em; text-wrap: balance; }
+p { margin: 0; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--pad); }
+.box { background: var(--surface); border: 2px solid var(--line); }
+
+/* ── Ритм секций ───────────────────────────────────────────────────────────
+   Раньше .section давала ровно один отступ, и шесть секций главной шли
+   с одинаковыми 76.8px сверху и снизу на одном фоне. Теперь у ритма три
+   ступени и две «палубы» — фоновая полоса во всю ширину окна, которой
+   отбиваются секции с собственной графикой. Полоса рисуется тенью с
+   clip-path, а не отрицательным margin на 100vw: тень не участвует в
+   раскладке и физически не может дать горизонтальную прокрутку. */
+.section { padding-block: var(--sect-y); position: relative; }
+.section--lg { padding-block: var(--sect-y-lg); }
+.section--sm { padding-block: var(--sect-y-sm); }
+.section--band,
+.band {
+  background: var(--deck);
+  box-shadow: 0 0 0 100vmax var(--deck);
+  clip-path: inset(0 -100vmax);
+}
+/* Палубная линия с сигнальным отрезком — начало секции читается как
+   размётка на настиле, а не как «ещё один абзац сверху». Линия привязана
+   к самому заголовку, а не к верхнему краю секции: 27 секций сайта несут
+   инлайновый padding-top (0 / 8px / clamp), и любая привязка к отступу
+   секции промахнулась бы мимо содержимого ровно на его величину. */
+.section-head { position: relative; max-width: 780px; padding-top: 18px; margin-bottom: clamp(26px, 3.4vw, 38px); }
+.section-head::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 2px; background: var(--line);
+}
+.section-head::after {
+  content: "";
+  position: absolute; left: 0; top: 0;
+  width: 84px; height: 6px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 6px, transparent 6px 12px);
+}
+/* Ярлык раздела — не «кикер над заголовком», а код над палубной линией:
+   на этом сайте он различает регистры (справочник / расчёт / заявка),
+   которых на одной странице реально несколько. */
+.eyebrow { display: block; color: var(--accent); font-weight: 700; font-size: var(--fs-2xs); letter-spacing: .16em; text-transform: uppercase; }
+.section-head h2 { font-size: clamp(1.4rem, 2.9vw, 2rem); margin-top: 9px; }
+.section-head p { margin-top: 14px; color: var(--ink-3); font-size: var(--fs-lead); line-height: 1.5; max-width: 56ch; text-transform: none; }
+.prose { max-width: 63ch; }
+/* Секция-и-колонка в одном элементе: .prose перебивал max-width у .wrap, а
+   margin:0 auto от .wrap оставался — колонка текста уезжала в центр окна,
+   пока таблицы, паспорта и заголовки той же страницы стояли по левому краю
+   контейнера. Так свёрстано 34 секции на 30 страницах. Ширину держит теперь
+   контейнер, меру строки — сами текстовые элементы. */
+.wrap.prose { max-width: var(--maxw); }
+.wrap.prose > p,
+.wrap.prose > ul,
+.wrap.prose > ol,
+.wrap.prose > h2,
+.wrap.prose > h3,
+.wrap.prose > blockquote { max-width: 63ch; }
+.prose p + p, .prose h3 + p, .prose ul + p, .prose p + h3, .prose p + ul { margin-top: 18px; }
+.prose ul { margin: 0; padding-left: 22px; }
+.prose li + li { margin-top: 8px; }
+.prose p, .prose li { color: var(--ink-2); }
+/* Кнопка — плашка с торцом: 3px тёмного низа это не «тень для красоты»,
+   а толщина металла, за счёт которой :active читается как физическое
+   нажатие (плашка проседает ровно на свою толщину). До этой волны у сайта
+   не было ни одного состояния нажатия. Нулевое размытие здесь не костюм
+   под неубрутализм, а язык, который сайт уже носит (см. hazard-оттиск
+   карточек Волны 19). */
+.btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #1A1A1A; font-weight: 700; padding: 13px 24px; border: none; cursor: pointer; font-family: var(--display); font-size: var(--fs-md); text-decoration: none; text-transform: uppercase; letter-spacing: .02em; box-shadow: 0 3px 0 0 #A96F14; transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease); }
+.btn:hover { background: #ffb84d; }
+.btn:active { transform: translateY(3px); box-shadow: 0 0 0 0 #A96F14; }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+.crumbs { font-size: var(--fs-xs); color: var(--ink-4); padding-block: 18px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+/* без подчёркивания ссылка в крошках визуально не отличалась от текущего раздела —
+   опознать её можно было только наведением (WCAG 1.4.1) */
+.crumbs a { text-decoration: underline; text-underline-offset: 3px; padding-block: 4px; }
+.crumbs a:hover { color: var(--accent); }
+/* Волна 130: фон шапки был rgba(26,26,26,.96) без размытия. На кадрах телефона
+   сквозь него читались уезжающие под шапку строки — светлый текст #F2F0EA при
+   4 % прозрачности даёт #232323 на грунте #1A1A1A, то есть различимый призрак.
+   Шапка этого сайта — окрашенный металл, а не матовое стекло: она непрозрачна. */
+.nav { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 3px solid var(--accent); }
+.nav__row { display: flex; justify-content: space-between; align-items: center; height: 70px; }
+.brand { font-family: var(--display); font-weight: 700; font-size: var(--fs-lg); text-decoration: none; text-transform: uppercase; letter-spacing: .04em; }
+.brand span { color: var(--accent); }
+.nav__links { display: flex; gap: 22px; align-self: stretch; align-items: stretch; font-size: var(--fs-sm); font-weight: 700; text-transform: uppercase; }
+/* Пункт меню — не голая ссылка, а ячейка с местом под метку текущего раздела.
+   До этой волны указатель текущей страницы был ТОЛЬКО в мобильной панели:
+   на десктопе aria-current="page" стоял в разметке и не рисовался ничем. */
+.nav__links a { position: relative; display: flex; align-items: center; text-decoration: none; transition: color var(--dur-1) var(--ease); }
+.nav__links a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: var(--accent); transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform var(--dur-2) var(--ease);
+}
+.nav__links a:hover { color: var(--accent); }
+.nav__links a:hover::after { transform: scaleX(1); }
+.nav__links a:active { color: #ffb84d; }
+.nav__links a[aria-current="page"] { color: var(--accent); }
+.nav__links a[aria-current="page"]::after {
+  transform: none;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, var(--bg) 5px 10px);
+  height: 5px;
+}
+@media (prefers-reduced-motion: reduce) { .nav__links a, .nav__links a::after { transition: none; } }
+
+/* Подвал был полоской серого текста высотой в одну строку. Теперь это
+   нижний срез настила: сигнальная лента, потом реквизиты. */
+.footer {
+  position: relative;
+  padding-block: clamp(30px, 3.4vw, 44px) clamp(24px, 2.6vw, 34px);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 14px 22px;
+  color: var(--ink-4); font-size: var(--fs-sm);
+}
+.footer::before {
+  content: ""; position: absolute; left: var(--pad); right: var(--pad); top: 0;
+  height: 8px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 7px, var(--bg) 7px 14px);
+}
+/* тап-таргет ссылки в футере был 21.5px по высоте (WCAG 2.5.8 требует 24) */
+.footer a { display: inline-block; padding-block: 6px; }
+@media (max-width: 760px) { .nav__links { display: none; } }
+/* Волна приёмки (31.08.2026). На десктопе шапка заканчивалась просто номером
+   телефона — та же кнопка «Заказать кран», что и в мобильной mcta-панели
+   (тот же --accent, тот же тёмный текст), только теперь видна и на широком
+   экране. Базовое правило объявлено ДО адаптивного override ниже: при равной
+   специфичности каскад берёт то, что стоит в файле позже, — иначе на узких
+   экранах display:none проигрывал бы этому же правилу (найдено и починено
+   живой проверкой на 375px на другом сайте сети). */
+.nav__order-btn {
+  display: inline-flex; align-items: center; margin-left: 8px; flex-shrink: 0;
+  background: var(--accent); color: #1A1A1A; font-weight: 700; text-transform: uppercase;
+  font-size: var(--fs-sm); padding: 9px 16px; text-decoration: none; white-space: nowrap;
+  transition: background-color var(--dur-1) var(--ease);
+}
+.nav__order-btn:hover { background: #ffb84d; }
+@media (max-width: 760px) { .nav__order-btn { display: none; } }
+
+/* Калькулятор — ключевой интерактивный элемент сайта, а выглядел он мелкой
+   формой в пустой полосе: 460px в контейнере 1180px. Теперь это прибор в том
+   же корпусе, что портовая панель и чертежи моделей: сигнальная лента по
+   верхнему срезу, стальная рамка, ширина под две колонки «входит/не входит»
+   третьего шага. */
+.calc { position: relative; padding: 32px 26px 28px; display: grid; gap: 15px; max-width: 620px; }
+.calc::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 11px, var(--bg) 11px 22px);
+}
+.calc__field { display: grid; gap: 6px; }
+.calc__field label { font-size: var(--fs-xs); color: var(--ink-4); font-weight: 700; text-transform: uppercase; }
+/* граница поля ввода — --accent-2 вместо --line: 3.6:1 к фону против 1.5:1 (WCAG 1.4.11) */
+.calc__field select { background: var(--bg); border: 2px solid var(--accent-2); color: var(--ink); padding: 10px 12px; font-family: inherit; font-size: var(--fs-md); }
+.calc__checkbox { display: flex; align-items: center; gap: 10px; font-size: var(--fs-sm); }
+.calc__checkbox input { width: 17px; height: 17px; }
+.calc__note { font-size: var(--fs-xs); background: var(--bg); border-left: 3px solid var(--accent); padding: 12px 14px; color: var(--ink-2); }
+.calc__result { border-top: 2px dashed var(--line); padding-top: 14px; }
+.calc__result-label { display: block; font-size: var(--fs-2xs); color: var(--ink-4); text-transform: uppercase; }
+/* Итог расчёта — такой же «прибор», как число в .fact-plate, и кегль у них
+   теперь общий: результат не должен быть тише заголовка своей же секции. */
+.calc__result b { display: block; font-size: clamp(1.5rem, 3vw, 2.15rem); color: var(--accent); margin-top: 8px; line-height: 1.05; font-variant-numeric: tabular-nums; }
+
+/* --- визард калькулятора: пошаговый прогресс, вопросы, кнопки-варианты --- */
+.calc__progress { display: flex; gap: 6px; }
+.calc__progress-step { flex: 1; height: 4px; background: var(--line); transition: background var(--dur-2) var(--ease); }
+.calc__progress-step.is-active, .calc__progress-step.is-done { background: var(--accent); }
+.calc__progress-label { font-size: var(--fs-2xs); color: var(--ink-4); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.calc__step { display: none; }
+.calc__step.is-active { display: grid; gap: 14px; animation: calc-step-in var(--dur-2) var(--ease); }
+@keyframes calc-step-in { from { opacity: 0; transform: translateX(6px); } to { opacity: 1; transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .calc__step.is-active { animation: none; } }
+.calc__question { display: block; font-size: var(--fs-md); font-weight: 700; }
+.calc__options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.calc__option { display: grid; gap: 5px; text-align: left; background: var(--bg); border: 2px solid var(--accent-2); color: var(--ink); padding: 14px 14px; min-height: 44px; font-family: inherit; cursor: pointer; transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease); }
+/* :focus-visible больше не глушит outline — глобальное фокус-кольцо остаётся видимым (WCAG 2.4.7) */
+.calc__option:hover, .calc__option:focus-visible { border-color: var(--accent); transform: translateY(-2px); }
+.calc__option.is-selected { border-color: var(--accent); background: var(--accent); }
+.calc__option.is-selected .calc__option-title, .calc__option.is-selected .calc__option-sub { color: #1A1A1A; }
+.calc__option-title { font-weight: 700; text-transform: uppercase; font-size: var(--fs-md); }
+.calc__option-sub { font-size: var(--fs-xs); color: var(--ink-4); }
+.calc__option.is-selected .calc__option-sub { color: #3a2f10; }
+.calc__back, .calc__restart { background: none; border: none; color: var(--ink-4); font-family: inherit; font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .02em; cursor: pointer; padding: 4px 0; justify-self: start; }
+.calc__back:hover, .calc__restart:hover { color: var(--accent); }
+.calc__step3-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+.calc__cta { justify-self: start; }
+@media (max-width: 420px) { .calc__options { grid-template-columns: 1fr; } .calc { padding: 28px 16px 22px; } }
+
+/* Три ограничения были свёрстаны тремя одинаковыми колонками — ровно тем
+   узором «иконка, заголовок, абзац x3», по которому макет опознаётся как
+   собранный моделью. Здесь он ещё и врал по смыслу: страницы, на которые
+   ведут карточки, называются «Ограничение первое / второе / третье», то есть
+   это упорядоченный перечень, а не три равнозначные плитки.
+   Стало — реестр: строки одной таблички, стенсил-знак слева, текст справа.
+   Такой раскладки больше нигде на сайте нет (везде 2- и 3-колоночные сетки),
+   и она совпадает с регистром страницы, набитой таблицами и паспортами. */
+.uslugi-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; background: var(--line); border: 2px solid var(--line); }
+.uslugi-card {
+  position: relative;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: clamp(16px, 2.4vw, 30px); align-items: start;
+  text-decoration: none; padding: clamp(20px, 2.4vw, 30px); background: var(--surface);
+}
+.uslugi-card > .card-icon { grid-column: 1; grid-row: 1; }
+.uslugi-card h3 { grid-column: 2; margin: 0; font-size: var(--fs-lg); }
+.uslugi-card p { grid-column: 3; margin-top: 3px; color: var(--ink-3); font-size: var(--fs-sm); text-transform: none; }
+/* Средняя ширина: описание уходит под название, знак держит обе строки. */
+@media (max-width: 900px) {
+  .uslugi-card { grid-template-columns: auto minmax(0, 1fr); }
+  .uslugi-card > .card-icon { grid-row: 1 / span 2; }
+  .uslugi-card p { grid-column: 2; margin-top: 9px; }
+}
+@media (max-width: 620px) {
+  .uslugi-card { grid-template-columns: minmax(0, 1fr); gap: 13px; }
+  .uslugi-card > .card-icon { grid-row: auto; }
+  .uslugi-card h3, .uslugi-card p { grid-column: 1; }
+  .uslugi-card p { margin-top: 0; }
+}
+
+/* «Примеры задач» — иллюстративные сценарии */
+/* Задач тринадцать — та же дырка в последнем ряду, что была у семи плеч. */
+.keysy-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; background: var(--line); }
+.keysy-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.keysy-card { display: block; text-decoration: none; padding: 26px; background: var(--surface); }
+.keysy-card__tag { color: var(--accent); font-size: var(--fs-2xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.keysy-card h2, .keysy-card h3 { margin-top: 10px; font-size: var(--fs-lg); }
+@media (max-width: 800px) { .keysy-grid { grid-template-columns: 1fr; } }
+
+/* Волна 23 — «Парк техники»: карточка модели. Квадратный бейдж класса техники
+   (жёсткая рамка, без скруглений) вместо иконки — читается как маркировка на
+   борту машины, а не как декоративная метка. */
+/* Волна 24 — третья модель (башенный кран): сетка растёт с 2 до 3 колонок,
+   тот же приём, что .uslugi-grid (repeat(3, 1fr)) — не новый паттерн, а
+   переиспользование уже принятого в design-code этого сайта. */
+.park-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); margin-top: clamp(20px, 3vw, 32px); }
+.park-card { display: block; text-decoration: none; padding: 26px; background: var(--surface); position: relative; }
+.park-card__type { display: inline-block; border: 2px solid var(--accent); color: var(--accent); font-size: var(--fs-2xs); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; }
+.park-card h2 { font-size: var(--fs-xl); margin-top: 14px; text-transform: none; }
+.park-card__spec { display: block; margin-top: 8px; color: var(--ink); font-size: var(--fs-md); font-weight: 700; font-variant-numeric: tabular-nums; }
+.park-card__note { margin-top: 10px; color: var(--ink-3); font-size: var(--fs-sm); text-transform: none; }
+@media (max-width: 980px) { .park-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .park-grid { grid-template-columns: 1fr; } .park-card { padding: 20px; } }
+/* Волна 128: ставки на хабе парка — строка-показание перед сеткой классов,
+   а не отдельная панель: три класса ниже и есть предмет, к которому относится
+   цена. Цифры — те же, что в калькуляторе главной; у башенного крана ставки
+   на сайте нет, и здесь она не появляется. */
+.park-rates {
+  margin-top: clamp(18px, 2.6vw, 26px);
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 22px;
+  padding: 12px 0 14px;
+  border-top: 2px solid var(--line); border-bottom: 2px solid var(--line);
+  font-size: var(--fs-sm); color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.park-rates__item b {
+  font-family: var(--display); font-size: var(--fs-lg); color: var(--accent);
+  letter-spacing: .01em; font-variant-numeric: tabular-nums; white-space: nowrap;
+  /* Само число — строчными, как в панели главной: капслок наследовался от
+     контейнера и «ОТ 4 000 ₽/ЧАС» кричало громче заголовка страницы. */
+  text-transform: none;
+}
+.park-rates__note { flex-basis: 100%; font-size: var(--fs-xs); letter-spacing: .02em; text-transform: none; }
+.park-rates__note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.park-rates__note a:hover { color: #ffb84d; }
+/* Перенесённый под сетку вводный абзац хаба парка. */
+.park-intro { margin-top: clamp(22px, 3vw, 32px); color: var(--ink-3); }
+
+/* --- визуальный апгрейд: hover- и глубинная полировка карточек --- */
+
+/* hover-полиш в духе промышленной маркировки: жёсткое кольцо-акцент вместо мягкой тени,
+   лёгкий подъём + подсветка — без скруглений и без блюра, честно грубо, как трафарет на контейнере */
+.uslugi-card, .route-card, .box, .park-card { position: relative; transition: transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease), filter var(--dur-1) var(--ease); }
+/* .box:hover без ограничения по тегу поднимал и подсвечивал ЛЮБУЮ панель с
+   этим классом, включая калькулятор: неинтерактивная панель реагировала на
+   наведение как карточка-ссылка и обещала переход, которого нет. */
+a.route-card:hover, a.box:hover {
+  transform: translateY(-3px);
+  box-shadow: inset 0 0 0 2px var(--accent), 0 10px 0 0 rgba(0,0,0,.35);
+  filter: brightness(1.06);
+}
+
+/* Волна 19 — uslugi-card: портовый hazard-hover вместо мягкого подъёма.
+   Карточка не «всплывает», а сдвигается против жёсткой тени-дубля сигнального
+   цвета — как смещённый оттиск трафарета на контейнере. Без blur, без filter.
+   Волна 23 — park-card использует тот же приём (см. .park-grid выше). */
+a.uslugi-card:hover, a.uslugi-card:focus-visible,
+a.park-card:hover, a.park-card:focus-visible {
+  transform: translate(-5px, -5px);
+  box-shadow: 8px 8px 0 0 var(--accent), inset 0 0 0 2px var(--bg);
+}
+
+/* =========================================================================
+   Фото-карточки парка на главной с 3D-тилтом при наведении.
+   Первый и единственный тилт-механизм на сайте, см. tilt.js.
+   Модификатор .park-card--photo кладёт фото сверху существующей
+   .park-card (Волна 23) и НЕ трогает её текстовые поля — только добавляет
+   картинку и переопределяет hover-transform, чтобы включить в него поворот. */
+/* Только 2 карточки (не 3, как у .park-grid хаба /park/) — своя раскладка
+   в 2 колонки на всех ширинах, где .park-grid обычно даёт 3. */
+/* max-width:760px оставлял справа 360px пустоты, и пара плашек читалась как
+   недоделанный ряд, а не как приём. Фотография — самый сильный аргумент этой
+   секции («разница видна уже на фото»), поэтому она берёт всю ширину
+   контейнера: 589px на плашку, оба исходника это выдерживают (1280 и 640 px). */
+.park-grid--photo { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(20px, 3vw, 32px); }
+@media (max-width: 620px) { .park-grid--photo { grid-template-columns: 1fr; } }
+/* Было padding-bottom:20px поверх базовых 26px карточки, а подписи получали
+   ещё по 20px margin — фото стояло с отступом 26px, а бейдж, название и
+   характеристика под ним с отступом 46px, то есть по разным вертикалям.
+   Теперь фото идёт в край плашки, а весь текст под ним — по одной линии 20px. */
+.park-card--photo { padding: 0 0 22px; overflow: hidden; }
+.park-card--photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-bottom: 2px solid var(--line); }
+.park-card--photo .park-card__type { margin: 18px 20px 0; }
+/* h3, не h2: на главной эти карточки — дочерние элементы секции со своим h2
+   («Два класса вблизи»), в отличие от хаба /park/, где park-card h2 сидит
+   прямо под h1 страницы. Стиль скопирован с общего .park-card h2. */
+.park-card--photo h3 { margin: 10px 20px 0; font-size: var(--fs-xl); text-transform: none; }
+.park-card--photo .park-card__spec { margin: 8px 20px 0; }
+
+/* Угол считает JS (--tilt-x/--tilt-y на самом элементе, mousemove/mouseleave —
+   см. tilt.js), CSS применяет его только в hover/focus-состоянии, поверх
+   обычного hazard-сдвига .park-card (Волна 19/23). Без JS или с --tilt-*
+   неопределёнными переменные падают на 0deg — карточка ведёт себя как обычный
+   .park-card. perspective(800px) — точка схода объявлена в самом transform,
+   а не на родителе, чтобы наклон не «плыл» по сетке при переносе карточек. */
+a.park-card--photo:hover, a.park-card--photo:focus-visible {
+  transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translate(-5px, -5px);
+  transition: transform var(--dur-1) linear, box-shadow var(--dur-2) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  a.park-card--photo, a.park-card--photo:hover, a.park-card--photo:focus-visible {
+    --tilt-x: 0deg !important;
+    --tilt-y: 0deg !important;
+  }
+}
+
+/* монолайн-иконки в квадратной акцентной рамке — стенсил-бейдж.
+   34px было ровно тем размером, при котором знак не читается и не работает
+   как акцент: половина высоты строки заголовка рядом. 48/56px — размер
+   трафаретного знака на борту, каким он и задуман. */
+.card-icon { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border: 3px solid var(--accent); color: var(--accent); flex-shrink: 0; }
+.card-icon svg { width: 30px; height: 30px; display: block; }
+@media (max-width: 620px) { .card-icon { width: 46px; height: 46px; } .card-icon svg { width: 25px; height: 25px; } }
+
+/* --- hero-иллюстрация: гусеничный кран поднимает контейнер на фоне портового крана ---
+   чистая line-art/силуэт-графика на токенах сайта, не фото и не имитация реального объекта */
+/* Иллюстрация висела в пустоте: тонкая линия сверху и силуэт крана посреди
+   ничего. Теперь это панель настила — тот же корпус, что у чертежей моделей
+   (.model-art): сигнальная лента по верхнему срезу, стальная рамка, а данные
+   (.port-band__strip) внизу как подпись прибора, а не как отдельный блок. */
+.port-panel {
+  position: relative;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding-top: 8px;
+}
+.port-panel::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 11px, var(--bg) 11px 22px);
+}
+.hero-illustration { padding: clamp(12px, 2.2vw, 24px) clamp(12px, 2.2vw, 24px) 0; }
+.hero-illustration__svg { width: 100%; height: auto; max-height: 340px; display: block; }
+/* .14 — портальный кран на заднем плане не читался вовсе, и правая треть
+   иллюстрации выглядела пустой. .24 держит его вторым планом, но видимым. */
+.i-bg-crane line { stroke: var(--ink); stroke-width: 2.5; opacity: .24; fill: none; }
+.i-water { stroke: var(--accent-2); stroke-width: 2; opacity: .5; fill: none; animation: i-water-flow 3.2s linear infinite; }
+@keyframes i-water-flow { to { stroke-dashoffset: -64; } }
+@media (prefers-reduced-motion: reduce) { .i-water { animation: none; } }
+.i-quay { stroke: var(--accent); stroke-width: 4; }
+.i-cont-a { fill: var(--surface); stroke: var(--line); stroke-width: 2; }
+.i-cont-accent { fill: var(--accent); stroke: var(--accent); stroke-width: 2; }
+.i-cont-outline { fill: none; stroke: var(--accent); stroke-width: 3; }
+.i-corr { stroke: var(--line); stroke-width: 1; opacity: .65; }
+.i-corr-strong { stroke: var(--line); stroke-width: 1.5; opacity: .85; }
+.i-corr-dark { stroke: var(--bg); stroke-width: 1; opacity: .55; }
+.i-corr-dark-strong { stroke: var(--bg); stroke-width: 1.5; opacity: .75; }
+.i-track { fill: var(--surface); stroke: var(--accent); stroke-width: 3; }
+.i-track-tick { stroke: var(--line); stroke-width: 1.5; }
+.i-cw { fill: var(--line); stroke: var(--accent-2); stroke-width: 2; }
+.i-cab { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.i-window { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+.i-pin { fill: var(--accent); }
+.i-boom { stroke: var(--ink); stroke-width: 2.2; }
+.i-cable { stroke: var(--accent); stroke-width: 2; fill: none; }
+.i-load { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+@media (max-width: 760px) { .hero-illustration__svg { max-height: 260px; } }
+
+/* лёгкий transform-only "3D"-параллакс от курсора/скролла — включается только в enhance.js,
+   когда JS отключает параллакс (reduced-motion), transform просто не выставляется, никакого CLS */
+.hero-illustration__svg { will-change: transform; }
+
+/* --- Волна 11: reading-progress + ToC + related-posts на статьях блога --- */
+
+/* Reading-progress: тонкая полоса вверху, transform:scaleX по прогрессу.
+   По умолчанию скрыта — показывается когда JS выставит .js на <html> (progressive enhancement). */
+.reading-progress { display: none; }
+html.js .reading-progress {
+  display: block;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 40;
+  background: transparent;
+  pointer-events: none;
+}
+.reading-progress__bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform .08s linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress__bar { transition: none; }
+}
+
+/* Article shell: сетка article + опциональный ToC-сайдбар на десктопе */
+.article-shell {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  align-items: start;
+}
+.article-shell:not(:has(.toc--desktop)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.article-shell__article {
+  padding: 24px 0 40px;
+  max-width: 63ch;
+}
+.article-shell__h1 {
+  font-size: clamp(1.5rem, .98rem + 2.1vw, 2.25rem);
+  margin: 14px 0 8px;
+}
+.article-shell__byline {
+  color: var(--ink-4);
+  font-size: var(--fs-sm);
+  margin-bottom: 28px;
+}
+/* 20px + scroll-padding-top:76px у html = те же 96px суммарного отступа, что в Волне 11 */
+.article-shell__article h2 { margin: 36px 0 16px; scroll-margin-top: 20px; }
+
+/* ToC — desktop sticky сайдбар */
+.toc--desktop {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  padding: 18px 16px;
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  font-size: var(--fs-sm);
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+.toc__title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: var(--fs-2xs);
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.toc__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.toc__list a {
+  display: block;
+  text-decoration: none;
+  color: var(--ink-3);
+  border-left: 2px solid transparent;
+  /* вертикальный padding 7px вместо 4px: тап-таргет ≈31px против 25px (WCAG 2.5.8) */
+  padding: 7px 0 7px 10px;
+  line-height: 1.3;
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+.toc__list a:hover { color: var(--ink); border-left-color: var(--line); }
+.toc__list a.is-active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 700;
+}
+
+/* ToC — mobile <details> внутри статьи (по умолчанию виден только на мобильном) */
+.toc--mobile {
+  display: none;
+  margin: 0 0 28px;
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 14px 16px;
+}
+.toc--mobile summary {
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: none;
+  font-size: var(--fs-sm);
+  list-style: none;
+}
+.toc--mobile summary::-webkit-details-marker { display: none; }
+.toc--mobile summary::before {
+  content: "▸ ";
+  color: var(--accent);
+  display: inline-block;
+  transition: transform var(--dur-1) var(--ease);
+}
+.toc--mobile[open] summary::before { content: "▾ "; }
+.toc--mobile .toc__list { margin-top: 12px; }
+
+@media (max-width: 960px) {
+  .article-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .toc--desktop { display: none; }
+  .toc--mobile { display: block; }
+}
+
+/* Related posts */
+.related-posts { padding-top: 8px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.related-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  text-decoration: none;
+  gap: 10px;
+  transition: transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease), filter var(--dur-1) var(--ease);
+}
+.related-card__tag {
+  color: var(--accent);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.related-card__title {
+  font-size: var(--fs-base);
+  text-transform: none;
+  margin: 0;
+}
+.related-card__desc {
+  color: var(--ink-3);
+  font-size: var(--fs-sm);
+  text-transform: none;
+  margin: 0;
+  flex: 1;
+}
+.related-card__more {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  margin-top: auto;
+}
+@media (max-width: 900px) { .related-grid { grid-template-columns: 1fr; } }
+
+/* --- Волна 10: scroll-reveal (IntersectionObserver, fade+translateY, once) --- */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-3) var(--ease), transform var(--dur-3) var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ============================================================
+   Волна 12: мобильная закреплённая панель действий + мобильное меню
+   Дизайн-код «портовый утилитарный»: 0 скруглений, толстые рамки,
+   жёсткая тень без блюра, заголовочная гарнитура капсом.
+   (Написано до смены гарнитур: тогда это была Roboto Condensed 900, сейчас
+   Cuprum 700 — веса 900 у неё нет. Правило берёт var(--display), не имя.)
+   ============================================================ */
+
+/* Высота панели = кнопка 48px + верхняя рамка 3px + нижний отступ
+   max(12px, safe-area) — тем же выражением компенсируем футер. */
+.mcta { display: none; }
+
+@media (max-width: 760px) {
+  :root { --mcta-h: calc(51px + max(12px, env(safe-area-inset-bottom))); }
+  /* футер не должен уезжать под панель */
+  body { padding-bottom: var(--mcta-h); }
+  /* при переходе по якорю и при табуляции к нижним элементам браузер
+     не должен подставлять их ровно под панель */
+  html { scroll-padding-bottom: var(--mcta-h); }
+
+  .mcta {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2px;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 60;
+    background: var(--line);
+    border-top: 3px solid var(--accent);
+    box-shadow: 0 -6px 0 0 rgba(0, 0, 0, .35);
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .mcta__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 8px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(var(--fs-xs), 3.4vw, var(--fs-md));
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color var(--dur-1) var(--ease);
+  }
+  .mcta__btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .mcta__btn--order { background: var(--accent); color: #1A1A1A; }
+  .mcta__btn--order:hover, .mcta__btn--order:active { background: #ffb84d; }
+  .mcta__btn--call { background: var(--surface); color: var(--ink); }
+  .mcta__btn--call:hover, .mcta__btn--call:active { background: var(--line); }
+  /* фокус-кольцо внутрь: 3px наружу у fixed-панели срезался бы краем экрана */
+  .mcta__btn:focus-visible { outline: 3px solid var(--accent); outline-offset: -6px; }
+  .mcta__btn--order:focus-visible { outline-color: #1A1A1A; }
+}
+
+/* Мобильное меню: <details> работает без JS, <summary> — нативная кнопка
+   с состоянием expanded и клавиатурой из коробки. */
+.nav__mobile { display: none; }
+@media (max-width: 760px) {
+  .nav__row { position: relative; }
+  .nav__mobile { display: block; }
+  .nav__mobile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 2px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .nav__mobile-btn::-webkit-details-marker { display: none; }
+  .nav__mobile-btn:hover { color: var(--accent); }
+  /* три полосы «трафаретом»: центральная — псевдоэлементами сверху и снизу */
+  .nav__mobile-bars {
+    position: relative;
+    display: block;
+    width: 22px; height: 3px;
+    background: var(--accent);
+  }
+  .nav__mobile-bars::before,
+  .nav__mobile-bars::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 22px; height: 3px;
+    background: var(--accent);
+  }
+  .nav__mobile-bars::before { top: -7px; }
+  .nav__mobile-bars::after { top: 7px; }
+  .nav__mobile[open] .nav__mobile-bars { background: transparent; }
+  .nav__mobile[open] .nav__mobile-bars::before { top: 0; }
+  .nav__mobile[open] .nav__mobile-bars::after { top: 0; width: 12px; }
+
+  .nav__mobile-panel {
+    position: absolute;
+    top: 100%;
+    right: var(--pad);
+    margin-top: 3px;
+    min-width: 232px;
+    display: grid;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    box-shadow: 0 10px 0 0 rgba(0, 0, 0, .35);
+    z-index: 30;
+  }
+  .nav__mobile-panel a {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 11px 18px;
+    border-bottom: 2px solid var(--line);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .nav__mobile-panel a:last-child { border-bottom: none; color: var(--accent); }
+  .nav__mobile-panel a:hover { background: var(--bg); color: var(--accent); }
+  .nav__mobile-panel a[aria-current="page"] {
+    color: var(--accent);
+    box-shadow: inset 3px 0 0 0 var(--accent);
+  }
+}
+
+/* Уменьшённое движение: ни одна новая сущность Волны 12 не анимируется,
+   плюс закрываем ранее незащищённые transform-переходы существующих карточек. */
+@media (prefers-reduced-motion: reduce) {
+  .mcta__btn { transition: none; }
+  .uslugi-card, .route-card, .box, .related-card, .calc__option, .toc__list a { transition: none; }
+  a.uslugi-card:hover, a.uslugi-card:focus-visible, a.route-card:hover, .box:hover,
+  .calc__option:hover, .calc__option:focus-visible { transform: none; }
+}
+
+/* =========================================================================
+   Волна 14 (дедупликация сети): справочная таблица допусков и врезка-факт.
+   Дизайн-код «портовый утилитарный»: 0 скруглений, рамки 2px, шапка капсом.
+   ========================================================================= */
+.spec-wrap { overflow-x: auto; border: 2px solid var(--line); margin-top: 24px; }
+.spec-table { width: 100%; min-width: 700px; border-collapse: collapse; font-size: var(--fs-md); }
+.spec-table caption { text-align: left; padding: 14px 16px; color: var(--ink-3); font-size: var(--fs-sm); border-bottom: 2px solid var(--line); }
+.spec-table th, .spec-table td { text-align: left; padding: 13px 16px; border-bottom: 2px solid var(--line); vertical-align: top; }
+.spec-table thead th { background: var(--surface); color: var(--accent); text-transform: uppercase; letter-spacing: .06em; font-size: var(--fs-xs); font-weight: 700; }
+.spec-table tbody th { color: var(--ink); font-weight: 700; }
+.spec-table tbody td { color: var(--ink-2); }
+.spec-table tbody tr:last-child th, .spec-table tbody tr:last-child td { border-bottom: none; }
+.spec-table tbody tr:hover th, .spec-table tbody tr:hover td { background: #262626; }
+@media (max-width: 760px) { .spec-table { min-width: 620px; font-size: var(--fs-sm); } }
+
+/* Врезка с одним проверяемым фактом — визуально ближе к предупреждающей
+   маркировке на технике, чем к обычной карточке .box. */
+.callout { background: var(--surface); border-left: 5px solid var(--accent); padding: 18px 22px; margin-top: 24px; }
+.callout p { color: var(--ink-2); }
+.callout p + p { margin-top: 12px; }
+.callout__label { display: block; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: var(--fs-xs); margin-bottom: 8px; }
+/* --- Волна 20: единый блок «Источники, проверено» -----------------------
+   Раньше — приглушённый абзац прозы без рамки (.sources-note, теперь снят).
+   Задача блока та же, что у .fact-plate/.passport: жёсткая грань, ни одного
+   скругления, «заклёпка»-маркер вместо генерик-иконки. Ссылки остаются
+   приглушёнными (это справочный, не навигационный список), но рамка и
+   заголовок делают источники узнаваемым структурным блоком, а не мелким
+   текстом внизу страницы. */
+.sources {
+  position: relative;
+  margin-top: clamp(28px, 4vw, 40px);
+  max-width: 70ch;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  padding: 16px 20px 18px;
+}
+.sources::before {
+  content: "";
+  position: absolute; top: 6px; left: 6px;
+  width: 5px; height: 5px;
+  background: var(--accent-2);
+}
+.sources__head {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  font-size: var(--fs-xs);
+  color: var(--accent);
+}
+.sources__list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 7px; }
+.sources__list li { position: relative; padding-left: 14px; font-size: var(--fs-sm); color: var(--ink-2); }
+.sources__list li::before {
+  content: "";
+  position: absolute; left: 0; top: .6em;
+  width: 5px; height: 5px;
+  background: var(--accent-2);
+}
+.sources__list a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+.sources__list a:hover { color: var(--accent); }
+.sources__more, .sources__note { margin-top: 12px; font-size: var(--fs-xs); color: var(--ink-4); }
+.sources__more a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.sources__more a:hover { color: #ffb84d; }
+
+/* =========================================================================
+   Волна 16 — структурное расхождение: сайт-календарь.
+   Новый компонентный словарь вместо hero/stat-bar/trust-bar/marquee/steps:
+   виджет статуса, годовая полоса, паспорт плеча, справочный список
+   «вопрос — ответ», нумерованный чек-лист, карточка маршрута.
+   Дизайн-код прежний: 0 скруглений, рамки 2–3px, заголовочная гарнитура капсом
+   (на момент записи Roboto Condensed, после смены гарнитур — Cuprum).
+   ========================================================================= */
+
+/* Первый экран: сначала данные, потом текст. */
+/* На /kalendar/ блок заголовка стоит прямо под годовой полосой, и зазор
+   между легендой полосы и h1 был ровно 0px: заголовок прилипал к подписи
+   предыдущего элемента. На главной .today__copy лежит внутри .today__hero
+   со своими полями, поэтому правило адресует только прямого потомка секции. */
+.today { padding-block: clamp(24px, 4vw, 44px) 0; }
+.today > .today__copy { margin-top: clamp(26px, 3.4vw, 44px); }
+/* Собственный кегль у h1 главной снят: он повторял верхнюю границу общего
+   правила (2.5rem), но по другой формуле — и на 768px давал 27.7px против
+   34.3px у любой другой страницы сайта. Дубль из двух разошедшихся копий
+   одного решения; осталась одна, общая. */
+.today__copy h1 { max-width: 23ch; }
+.today__copy .prose { margin-top: 18px; max-width: 56ch; font-size: var(--fs-lead); line-height: 1.5; }
+.today__copy .prose + .prose { margin-top: 14px; }
+/* Перенесённый остаток лида (Волна 128) стоит между плашкой фактов и таблицей
+   пределов — его отбивает та же ступень ритма, что и другие блоки .today. */
+.today__copy--more { margin-top: clamp(22px, 3vw, 34px); }
+
+/* =========================================================================
+   Волна 128 — первый экран телефона.
+   Заголовок сайта состоит из двух половин через двоеточие («Аренда крана в
+   Ленобласти» + «сначала дата и дорога, потом модель»). Одним куском капслоком
+   он давал на 375px четыре ровных строки одного кегля — читать приходилось
+   все четыре, чтобы понять первую. Двоеточие заменено на перелом: крупная
+   половина отвечает «что и где», строчная подзаголовочная — «по какому
+   правилу». Слова и порядок те же, элемент по-прежнему один <h1>.
+   ========================================================================= */
+.today__h1-sub {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: var(--fs-lead);
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-2);
+  max-width: 34ch;
+}
+/* Крупным заголовкам переносы запрещены явно: Cuprum капслоком на 320px
+   с автопереносом рвёт слово посередине, и «ЛЕНОБ-ЛАСТИ» читается как опечатка. */
+h1, h2, h3, .today__h1-sub { hyphens: manual; -webkit-hyphens: manual; }
+
+/* Рейл прибора: дата приказа + плашка состояния. Первая строка страницы —
+   по-прежнему статус на сегодня, а не прайс. */
+.today__rail {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  margin-bottom: clamp(16px, 2.2vw, 22px);
+  padding-bottom: clamp(12px, 1.6vw, 16px);
+  border-bottom: 2px solid var(--line);
+}
+.today__rail-date {
+  font-family: var(--display);
+  font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  font-size: var(--fs-sm); color: var(--ink);
+}
+.today__rail-badge {
+  display: none;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  font-size: var(--fs-2xs); padding: 4px 10px;
+  border: 2px solid currentColor;
+}
+.today__rail[data-state="spring"] .today__rail-badge--spring,
+.today__rail[data-state="summer"] .today__rail-badge--summer,
+.today__rail[data-state="clear"]  .today__rail-badge--clear,
+.today__rail[data-state="stale"]  .today__rail-badge--stale { display: inline-block; }
+.today__rail-badge--spring { color: var(--bg); background: var(--accent); border-color: var(--bg); }
+.today__rail-badge--summer { color: var(--bg); background: #C98A1E; border-color: var(--bg); }
+.today__rail-badge--clear  { color: var(--ink-4); background: transparent; }
+.today__rail-badge--stale  { color: var(--ink); background: transparent; border-style: dashed; }
+
+/* Ставки. Две ячейки — тот же «прибор», что .fact-plate, но в половинном
+   кегле: на первом экране цена должна читаться, а не кричать громче заголовка.
+   Числа те же, что в шагах калькулятора ниже (src/js/calculator.js). */
+.today__rates {
+  margin-top: clamp(18px, 2.6vw, 26px);
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px; background: var(--line); border: 2px solid var(--line);
+  max-width: 30rem;
+}
+.today__rate { position: relative; background: var(--surface); padding: 12px 14px 13px; min-width: 0; }
+.today__rate::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 30px; height: 4px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, transparent 5px 10px);
+}
+.today__rate-name { display: block; font-size: var(--fs-2xs); color: var(--ink-4); text-transform: uppercase; letter-spacing: .09em; }
+.today__rate-num {
+  display: block; margin-top: 6px;
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(1.1rem, .96rem + .6vw, 1.34rem);
+  line-height: 1.1; color: var(--accent);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.today__rates-note { margin-top: 12px; font-size: var(--fs-xs); color: var(--ink-4); }
+/* Лид идёт после ставок и отбивается от них крупнее, чем строки внутри блока
+   ставок друг от друга: иначе три текстовых ступени подряд сливаются в одну. */
+.today__rates-note + .prose { margin-top: clamp(18px, 2.4vw, 24px); }
+.today__rates-note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.today__rates-note a:hover { color: #ffb84d; }
+
+/* =========================================================================
+   Волна 126 — рамочная видео-панель hero в портовом hazard-коде.
+   isolation:isolate заводит новый stacking context, чтобы
+   z-index внутри панели не спорил с остальной страницей. background на
+   .today__hero-media — это и есть постер-фоллбэк: он висит ПОД видео всегда, а
+   не только когда видео отключено, поэтому картинка уже на месте в момент,
+   когда браузер только начинает грузить видео (preload="none" держит объект
+   пустым до автовоспроизведения). ========================================= */
+.today__hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-top: clamp(28px, 4vw, 44px);
+  border: 3px solid var(--accent);
+  padding: clamp(30px, 4.6vw, 54px) clamp(20px, 4.6vw, 44px) clamp(26px, 4vw, 44px);
+}
+/* Сигнальная лента — та же диагональная штриховка, что у .status-flag/
+   .rs-hazard-*: hazard-язык этого сайта опознаётся именно по штрихованной
+   ленте, а не по цвету рамки, поэтому голого бордера здесь мало. */
+.today__hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 10px;
+  z-index: 2;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 14px, var(--bg) 14px 28px);
+}
+.today__hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--surface) center / cover no-repeat;
+  /* Постер отдаётся фоном, а не <img>, поэтому <picture> сюда не применим:
+     формат выбирается через image-set(). Браузер без поддержки WebP берёт
+     второй кандидат — тот же JPEG, что стоит в poster= у <video>. */
+  background-image: image-set(
+    url('/images/hero/hero-crane-silhouette-poster.webp') type('image/webp'),
+    url('/images/hero/hero-crane-silhouette-poster.jpg') type('image/jpeg')
+  );
+}
+.today__hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Скрим темнее слева (где текст) и легче справа — честный контраст именно там,
+   где стоит h1/проза (у неё max-width 56ch и 23ch, обе укладываются в тёмную
+   зону), при этом силуэт крана на закате читается на правом крае панели. */
+.today__hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(100deg, rgba(26,26,26,.92) 0%, rgba(26,26,26,.86) 40%, rgba(26,26,26,.64) 72%, rgba(26,26,26,.42) 100%);
+}
+/* Волна 128. Скрим по диагонали рассчитан на десктоп: там текст сидит в левой
+   тёмной зоне (max-width 56ch и 23ch), а светлый правый край отдан силуэту.
+   На телефоне колонка текста занимает ВСЮ ширину панели и заезжает в зону .42 —
+   строки лида ложатся прямо на подсвеченное закатом небо. Здесь скрим
+   вертикальный и ровный: худший пиксель постера (почти белое небо) под .82
+   даёт #3E3E3E, то есть 8.4:1 для основного текста вместо 3-4:1 у прежнего края. */
+@media (max-width: 760px) {
+  .today__hero-scrim {
+    background: linear-gradient(180deg, rgba(26,26,26,.90) 0%, rgba(26,26,26,.82) 48%, rgba(26,26,26,.90) 100%);
+  }
+}
+/* Требование ТЗ: reduced-motion скрывает <video> и показывает постер. Постер
+   уже лежит в background-image контейнера (см. .today__hero-media выше) —
+   скрыть видео здесь и есть весь фоллбэк, без единой строчки JS. */
+@media (prefers-reduced-motion: reduce) {
+  .today__hero-video { display: none; }
+}
+.today__hero .today__copy { position: relative; z-index: 3; }
+/* Волна 128: панель стала первым блоком секции — верхний зазор ей больше не
+   нужен, его уже даёт padding секции .today. Следующий за ней виджет статуса
+   отбивается собственной ступенью, а не полем панели. */
+.today > .today__hero:first-child { margin-top: 0; }
+.today > .today__hero + .status-panel { margin-top: clamp(20px, 2.8vw, 32px); }
+@media (max-width: 560px) {
+  /* На телефоне бюджет первого экрана — 664px (812 минус шапка и нижняя
+     панель действий). Поля панели съедали из них 56px по вертикали. */
+  .today__hero { padding: 22px 16px 20px; }
+  .today__rates { max-width: none; }
+}
+/* Ниже 375px две колонки ставок перестают вмещать «от 4 000 ₽/час»: на 320px
+   в ячейке остаётся 93px под строку в 112px, и хвост «/час» уходил под
+   соседнюю ячейку — обрезка была видна только на кадре, ширина страницы
+   при этом оставалась честной (320/320). Уменьшать кегль цены до 16px, чтобы
+   вписаться, значило бы сделать главное число мельче подписи под ним. */
+@media (max-width: 374px) {
+  .today__rates { grid-template-columns: 1fr; }
+}
+
+/* --- Виджет «статус ограничений на сегодня» ---------------------------- */
+/* Левая полоса цветом состояния = первое, что видит человек. Состояния:
+   spring — жёсткий лимит, summer — по погоде, clear — свободно, stale — не сверено. */
+.status-panel {
+  background: var(--surface);
+  border: 3px solid var(--line);
+  border-left-width: 10px;
+  padding: clamp(18px, 3vw, 28px);
+}
+.status-panel[data-state="spring"] { border-left-color: var(--accent); }
+.status-panel[data-state="summer"] { border-left-color: #C98A1E; }
+.status-panel[data-state="clear"]  { border-left-color: #6B7280; }
+.status-panel[data-state="stale"]  { border-left-color: var(--ink); }
+.status-panel__head {
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+  align-items: baseline; justify-content: space-between;
+  border-bottom: 2px solid var(--line); padding-bottom: 10px;
+}
+.status-panel__today { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: var(--fs-sm); }
+.status-panel__src { font-size: var(--fs-xs); color: var(--ink-4); text-transform: uppercase; letter-spacing: .04em; }
+.status-panel__headline {
+  margin-top: 16px;
+  font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+  font-weight: 700; text-transform: uppercase; line-height: 1.15;
+  color: var(--accent);
+}
+.status-panel[data-state="clear"] .status-panel__headline { color: var(--ink); }
+.status-panel__limit { margin-top: 10px; font-size: var(--fs-base); color: var(--ink); font-weight: 700; }
+.status-panel__detail { margin-top: 8px; color: var(--ink-2); font-size: var(--fs-md); max-width: 58ch; }
+.status-panel__foot { margin-top: 14px; font-size: var(--fs-xs); color: var(--ink-4); max-width: 61ch; }
+.status-panel__foot a { color: var(--ink-3); }
+.status-panel__foot a:hover { color: var(--accent); }
+
+/* =========================================================================
+   Волна 19 — hazard-стенсил индикатор статуса + честная плашка фактов.
+   Задача: показать «действует / не действует» с первого взгляда, не только
+   текстом, но БЕЗ generic красного/зелёного кружка — вместо него стенсил-
+   плашка (гранёный «знак», как на промышленной таре) со штриховкой сигнальной
+   ленты для активных состояний и плоской/штрихованной заливкой для
+   спокойных/неподтверждённых. ========================================== */
+.status-panel__top { display: flex; gap: 18px; align-items: flex-start; }
+.status-panel__top-text { flex: 1; min-width: 0; }
+.status-panel__top .status-panel__head { border-bottom: none; padding-bottom: 0; }
+
+/* Гранёная стенсил-плашка: восьмиугольный «знак» без единого скругления —
+   форма сама по себе читается как предупреждающий знак, до всякого цвета. */
+.status-flag {
+  --flag-a: var(--accent-2);
+  --flag-b: var(--bg);
+  --flag-fg: var(--bg);
+  flex-shrink: 0;
+  width: clamp(60px, 8vw, 84px);
+  aspect-ratio: 1;
+  clip-path: polygon(20% 0, 80% 0, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0 80%, 0 20%);
+  border: 3px solid var(--bg);
+  outline: 2px solid var(--flag-a);
+  outline-offset: -2px;
+  background: var(--flag-a);
+  display: grid;
+  place-items: center;
+}
+.status-flag::after {
+  content: "";
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 4vw, 2.3rem);
+  line-height: 1;
+  color: var(--flag-fg);
+}
+/* spring / summer — сигнальная лента: диагональная штриховка = «действует».
+   Разный цвет полос сохраняет уже принятое различие весна/лето. */
+/* Под знаком лежит сплошное поле сигнального цвета, и только вокруг него идёт
+   штриховка. Без него восклицательный знак цветом --bg попадал то на полосу
+   --flag-a, то на полосу --bg и на второй просто исчезал — знак «действует»
+   читался как пустой полосатый квадрат. */
+.status-panel[data-state="spring"] .status-flag,
+.status-panel[data-state="summer"] .status-flag {
+  --flag-fg: var(--bg);
+  background:
+    linear-gradient(var(--flag-a) 0 0) 50% 50% / 48% 66% no-repeat,
+    repeating-linear-gradient(45deg, var(--flag-a) 0 11px, var(--bg) 11px 22px);
+}
+.status-panel[data-state="spring"] .status-flag { --flag-a: var(--accent); }
+.status-panel[data-state="spring"] .status-flag::after { content: "!"; }
+.status-panel[data-state="summer"] .status-flag { --flag-a: #C98A1E; }
+.status-panel[data-state="summer"] .status-flag::after { content: "!"; font-size: clamp(1.5rem, 3.4vw, 2rem); }
+/* clear — плоская заливка без штриховки: предупреждать не о чем */
+.status-panel[data-state="clear"] .status-flag { --flag-a: var(--accent-2); --flag-fg: var(--bg); }
+.status-panel[data-state="clear"] .status-flag::after { content: "—"; }
+/* stale — перекрёстная штриховка «не сверено», приглушённая, не сигнальная */
+.status-panel[data-state="stale"] .status-flag {
+  --flag-fg: var(--ink);
+  background:
+    repeating-linear-gradient(45deg, transparent 0 9px, rgba(242,240,234,.22) 9px 10px),
+    repeating-linear-gradient(-45deg, transparent 0 9px, rgba(242,240,234,.22) 9px 10px),
+    var(--surface);
+  outline-color: var(--line);
+}
+.status-panel[data-state="stale"] .status-flag::after { content: "?"; }
+
+/* Текстовые штампы-состояния — реальный текст (не только цвет/иконка, WCAG 1.4.1),
+   переключаются чистым CSS по [data-state], поэтому клиентский пересчёт status.js
+   их подхватывает без единой строчки JS. */
+.status-panel__state { margin-top: 10px; }
+.status-panel__badge {
+  display: none;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  font-size: var(--fs-2xs); padding: 4px 10px;
+  border: 2px solid currentColor;
+}
+.status-panel[data-state="spring"] .status-panel__badge--spring,
+.status-panel[data-state="summer"] .status-panel__badge--summer,
+.status-panel[data-state="clear"] .status-panel__badge--clear,
+.status-panel[data-state="stale"] .status-panel__badge--stale {
+  display: inline-block;
+}
+.status-panel__badge--spring { color: var(--bg); background: var(--accent); border-color: var(--bg); }
+.status-panel__badge--summer { color: var(--bg); background: #C98A1E; border-color: var(--bg); }
+/* Волна 29 (a11y-аудит): было color: var(--accent-2) — #6B7280 на var(--surface) даёт 3.25:1,
+   а это 11.84px/700 (мелкий текст, bold 900 не дотягивает до порога «крупного» в 18.66px) —
+   провал WCAG 1.4.3 (нужно 4.5:1). "Clear" — самое частое состояние виджета (7 из 12 месяцев,
+   см. season-logic.js), поэтому баг не крайний случай. #9AA0A6 — тот же приглушённый серый,
+   что уже используют .status-panel__src/.crumbs/.yearline__regime по сайту, даёт 5.95:1. */
+.status-panel__badge--clear { color: var(--ink-4); background: transparent; }
+.status-panel__badge--stale { color: var(--ink); background: transparent; border-style: dashed; }
+
+@media (max-width: 480px) {
+  .status-panel__top { gap: 12px; }
+  .status-flag { width: 52px; }
+  .status-flag::after { font-size: 1.4rem; }
+}
+
+/* --- Честная плашка фактов: только то, что реально считается на странице ---
+   Дата проверки статуса и число маршрутов на контроле (4 карточки ниже) —
+   никакого выдуманного бизнес-масштаба. Вид — заклёпанная промышленная
+   табличка: жёсткие грани, засечки-«заклёпки» по углам через ::before/::after. */
+.fact-plate {
+  margin-top: clamp(16px, 2.4vw, 24px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--line);
+  border: 2px solid var(--line);
+}
+.fact-plate__item {
+  position: relative;
+  background: var(--surface);
+  padding: clamp(18px, 2.2vw, 24px) clamp(16px, 2vw, 20px) clamp(18px, 2.2vw, 22px);
+}
+/* Была серая точка 5x5 в углу. Стала короткая сигнальная лента по верхнему
+   краю таблички — тот же мотив, что у палубной линии секций и у ленты hero. */
+.fact-plate__item::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 38px; height: 5px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, transparent 5px 10px);
+}
+/* Цифра была 25.5px при заголовке секции 37.4px — факт проигрывал по громкости
+   всему, что стояло рядом, хотя он и есть содержание этой таблички.
+   Теперь 25.5–36.6px и моноширинные цифры: три числа стоят в колонку ровно. */
+.fact-plate__num { display: block; font-size: clamp(1.5rem, 3vw, 2.15rem); font-weight: 700; color: var(--accent); line-height: 1.05; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.fact-plate__label { display: block; margin-top: 9px; font-size: var(--fs-2xs); color: var(--ink-4); text-transform: uppercase; letter-spacing: .09em; line-height: 1.3; }
+@media (max-width: 640px) {
+  .fact-plate { grid-template-columns: 1fr; }
+}
+
+/* --- Годовая полоса-таймлайн ------------------------------------------- */
+/* Список, а не картинка: читается скринридером и индексируется.
+   На узком экране горизонтальная прокрутка внутри себя, страница не едет. */
+.yearline {
+  list-style: none; margin: 22px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(12, minmax(74px, 1fr));
+  gap: 2px; background: var(--line); border: 2px solid var(--line);
+  overflow-x: auto;
+}
+.yearline__cell {
+  background: var(--surface); padding: 12px 8px 10px;
+  border-top: 5px solid var(--accent-2);
+  display: grid; gap: 4px; align-content: start;
+}
+.yearline__cell--spring, .yearline__cell--mixed { border-top-color: var(--accent); }
+.yearline__cell--summer { border-top-color: #C98A1E; }
+.yearline__month { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+.yearline__regime { font-size: var(--fs-2xs); color: var(--ink-4); text-transform: uppercase; letter-spacing: .02em; }
+.yearline__cell.is-now { background: #2C2A24; box-shadow: inset 0 0 0 2px var(--accent); }
+.yearline__cell.is-now .yearline__month { color: var(--accent); }
+.yearline__legend { margin-top: 10px; font-size: var(--fs-xs); color: var(--ink-4); }
+.yearline__key { display: inline-block; width: 16px; height: 5px; vertical-align: middle; }
+.yearline__key--clear { background: var(--accent-2); }
+.yearline__key--mixed, .yearline__key--spring { background: var(--accent); }
+.yearline__key--summer { background: #C98A1E; }
+@media (max-width: 900px) {
+  .yearline { grid-template-columns: repeat(6, minmax(80px, 1fr)); }
+}
+@media (max-width: 480px) {
+  .yearline { grid-template-columns: repeat(3, minmax(90px, 1fr)); }
+}
+
+/* --- Паспорт плеча / ограничения (описательный список) ------------------ */
+.passport {
+  margin: 26px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+  background: var(--line); border: 2px solid var(--line);
+}
+.passport > div { background: var(--surface); padding: 14px 16px; }
+.passport dt {
+  font-size: var(--fs-2xs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--accent);
+}
+.passport dd { margin: 6px 0 0; color: var(--ink-2); font-size: var(--fs-md); }
+.passport--limit { grid-template-columns: 1fr; }
+.passport--limit > div { display: grid; grid-template-columns: minmax(160px, 34%) 1fr; gap: 4px 18px; align-items: baseline; }
+.passport--limit dd { margin: 0; }
+@media (max-width: 760px) {
+  .passport { grid-template-columns: 1fr; }
+  .passport--limit > div { grid-template-columns: 1fr; }
+}
+
+/* --- Справочный список «вопрос — ответ» вместо аккордеона --------------- */
+/* Ответ виден сразу: меньше кликов человеку и корректная видимость
+   контента для разметки FAQPage без раскрытия. */
+.qa { margin: 0; padding: 0; max-width: 70ch; }
+.qa dt {
+  margin-top: 26px; padding-left: 16px;
+  border-left: 5px solid var(--accent);
+  font-weight: 700; text-transform: uppercase; font-size: var(--fs-md); line-height: 1.25;
+}
+.qa dt:first-child { margin-top: 0; }
+.qa dd { margin: 10px 0 0 21px; color: var(--ink-2); font-size: var(--fs-md); }
+.qa dd a { color: var(--accent); }
+
+/* --- Нумерованный чек-лист «что уточняем до выезда» --------------------- */
+.checklist { list-style: none; margin: 0; padding: 0; counter-reset: chk; max-width: 70ch; }
+.checklist li {
+  counter-increment: chk;
+  position: relative;
+  padding: 14px 0 14px 54px;
+  border-bottom: 2px solid var(--line);
+  color: var(--ink-2); font-size: var(--fs-md);
+}
+.checklist li:first-child { border-top: 2px solid var(--line); }
+.checklist li::before {
+  content: counter(chk, decimal-leading-zero);
+  position: absolute; left: 0; top: 12px;
+  font-weight: 700; font-size: var(--fs-lg); color: var(--accent); letter-spacing: .04em;
+}
+.checklist li b { color: var(--ink); }
+.checklist li a { color: var(--accent); }
+
+/* --- Волна 19: line-art-схема маршрута (трал / съезд на грунтовку / мост) ---
+   Визуальный якорь между таблицей пределов и карточками плеч: та же
+   line-art-техника токенов, что у портовой иллюстрации, но в hazard-языке —
+   диагональная штриховка (та же SVG-паттерн-лента, что у .status-flag),
+   жёсткие линии, 0 скруглений. Оба знака берут числа из season-logic.js. */
+/* Схема плеча стояла тем же способом, что портовая иллюстрация до правки:
+   волосяная линия сверху и чертёж в пустоте. Корпус тот же, что у .port-panel
+   и .model-art — на сайте теперь один способ оправить графику, а не три. */
+.route-scheme {
+  position: relative;
+  margin-top: clamp(24px, 4vw, 40px);
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding: calc(8px + clamp(16px, 2.4vw, 24px)) clamp(14px, 2.4vw, 24px) clamp(14px, 2vw, 20px);
+}
+.route-scheme::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 11px, var(--bg) 11px 22px);
+}
+.route-scheme__svg { width: 100%; height: auto; max-height: 300px; display: block; }
+.rs-hazard-bg { fill: var(--bg); }
+.rs-hazard-fg { fill: var(--accent); }
+.rs-ground-bg { fill: var(--surface); }
+.rs-ground-line { stroke: var(--line); stroke-width: 2; }
+.rs-road { fill: var(--surface); stroke: var(--line); stroke-width: 2; }
+.rs-centerline { stroke: var(--accent-2); stroke-width: 3; opacity: .6; fill: none; }
+.rs-cab { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.rs-window { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+.rs-hitch { stroke: var(--ink); stroke-width: 3; }
+.rs-bed { fill: var(--accent); stroke: var(--bg); stroke-width: 2; }
+.rs-corr { stroke: var(--bg); stroke-width: 1.5; opacity: .55; }
+.rs-load { fill: var(--surface); stroke: var(--line); stroke-width: 2; }
+.rs-load-corr { stroke: var(--line); stroke-width: 1; opacity: .75; }
+.rs-wheel { fill: var(--line); stroke: var(--ink); stroke-width: 2; }
+.rs-hub { fill: var(--bg); }
+.rs-fork { stroke: var(--accent-2); stroke-width: 3; stroke-dasharray: 10 8; fill: none; }
+.rs-ground { stroke: var(--line); stroke-width: 2; }
+.rs-stem { stroke: var(--line); stroke-width: 2; stroke-dasharray: 4 4; fill: none; }
+.rs-sign { fill: var(--surface); stroke: url(#rsHazard); stroke-width: 8; }
+.rs-sign-text { fill: var(--ink); font-family: var(--display); font-weight: 700; text-anchor: middle; text-transform: uppercase; font-size: 22px; }
+.rs-sign-text--sub { font-size: 10px; fill: var(--ink-3); font-weight: 700; }
+.rs-post { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.rs-beam { fill: var(--surface); stroke: var(--accent); stroke-width: 3; }
+.rs-brace { stroke: var(--accent); stroke-width: 4; stroke-dasharray: 14 8; fill: none; }
+.rs-arrow { stroke: var(--ink); stroke-width: 3; fill: none; }
+.route-scheme__cap { margin-top: 14px; font-size: var(--fs-sm); color: var(--ink-4); max-width: 75ch; }
+/* Волна 130: две композиции одной схемы — горизонтальная и вертикальная.
+   На узком экране рисуется поле 340×250, где знак занимает четверть ширины
+   карточки и цифра на нём читается с руки. */
+.route-scheme__svg--narrow { display: none; }
+/* Знак вертикальной схемы берёт СВОЙ паттерн ленты: id живут в общем
+   пространстве документа, но defs горизонтальной схемы лежат внутри
+   display:none-поддерева, и ссылка на них у части браузеров не разрешается.
+   Поле знака — грунт, а не поверхность карточки: на --surface гранёный
+   контур растворялся в фоне панели, и на кадре оставались цифры в пустоте. */
+.rs-sign--narrow { fill: var(--bg); stroke: url(#rsmHazard); }
+.rs-sign-text--narrow { font-size: 30px; }
+.rs-plate { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.rs-plate-text {
+  fill: var(--ink-2); font-family: var(--display); font-weight: 700;
+  text-anchor: middle; text-transform: uppercase; letter-spacing: .06em; font-size: 13px;
+}
+@media (max-width: 760px) {
+  .route-scheme__svg--wide { display: none; }
+  .route-scheme__svg--narrow { display: block; max-height: none; }
+}
+
+/* --- Карточка маршрута -------------------------------------------------- */
+/* Плеч семь, колонок две — седьмая карточка оставляла в сетке пустую
+   ячейку цвета --line, то есть дырку в табличке. Нечётная последняя
+   растягивается на обе колонки и закрывает ряд. */
+.route-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; background: var(--line); }
+.route-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+.route-card { display: block; text-decoration: none; padding: 24px 26px 26px; background: var(--surface); }
+.route-card__limit {
+  display: inline-block; background: var(--accent); color: #1A1A1A;
+  font-size: var(--fs-2xs); font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: 4px 9px;
+}
+.route-card h3 { margin-top: 14px; font-size: var(--fs-lg); }
+.route-card p { margin-top: 10px; color: var(--ink-3); font-size: var(--fs-sm); text-transform: none; }
+@media (max-width: 800px) { .route-grid { grid-template-columns: 1fr; } }
+
+/* --- Портовая полоса с иллюстрацией ------------------------------------- */
+.port-band { padding-block: var(--sect-y-lg); }
+.port-band__cap { margin-top: 16px; font-size: var(--fs-sm); color: var(--ink-4); max-width: 75ch; }
+
+/* Волна 19 — статичная hazard-лента фактов вместо бегущей строки: два реальных
+   факта, что уже стояли в тексте абзацем, теперь читаются с одного взгляда,
+   в рамке из той же сигнальной ленты, что и у знаков схемы маршрута выше. */
+/* Лента-факты — теперь нижняя строка панели, а не самостоятельный блок:
+   своя сигнальная кайма ей больше не нужна, её несёт верхний срез .port-panel.
+   min-width: min(260px, 100%) — иначе на 320px внутри рамки с полями ячейке
+   не хватает места и она распирает страницу; голого min-width:260px тут
+   достаточно, чтобы получить горизонтальную прокрутку на минимальной ширине. */
+.port-band__strip {
+  display: flex; flex-wrap: wrap; gap: 2px;
+  background: var(--line);
+  border-top: 2px solid var(--line);
+  margin-top: clamp(12px, 2vw, 20px);
+}
+.port-band__fact {
+  flex: 1; min-width: min(260px, 100%);
+  background: var(--surface);
+  padding: 14px 18px 16px;
+  font-size: var(--fs-sm); font-weight: 700; color: var(--ink-2);
+}
+.port-band__fact b { color: var(--accent); font-size: var(--fs-lg); font-family: var(--display); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+
+/* --- Дополнения к справочной таблице ------------------------------------ */
+.spec-table--months { min-width: 760px; }
+.spec-table tbody tr.is-now th, .spec-table tbody tr.is-now td { background: #2C2A24; }
+.spec-table tbody tr.is-now th { color: var(--accent); }
+.spec-table a { color: var(--accent); }
+
+/* --- Видимость контентных ссылок ----------------------------------------
+   У сайта глобально a { color: inherit }, и раньше каждая инлайн-ссылка несла
+   style="color:var(--accent)" руками. Волна 16 убрала инлайн-стили из разметки,
+   поэтому правило нужно здесь — иначе ссылка в тексте неотличима от текста.
+   Подчёркивание обязательно: цвет не должен быть единственным признаком (WCAG 1.4.1). */
+.prose a, .callout a, .checklist a, .qa dd a, .passport a, .spec-table a, .port-band__cap a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose a:hover, .callout a:hover, .checklist a:hover, .qa dd a:hover,
+.passport a:hover, .spec-table a:hover { color: #ffb84d; }
+/* карточки-ссылки и оглавление внутри .prose подчёркивать не надо — у них своя
+   собственная система состояний (рамка/подсветка активного пункта) */
+.prose a.box, .prose a.btn, .prose a.uslugi-card, .prose a.route-card, .prose a.keysy-card {
+  color: inherit; text-decoration: none;
+}
+.prose .toc__list a { color: var(--ink-3); text-decoration: none; }
+.prose .toc__list a:hover { color: var(--ink); }
+.prose .toc__list a.is-active { color: var(--accent); }
+.prose a.btn { color: #1A1A1A; }
+/* .sources__list — сами ссылки-цитаты — остаются приглушёнными внутри .prose:
+   это справочный список, а не навигация, генерик-правило .prose a их не красит.
+   .sources__more — ссылка на страницу с полным списком — навигационная по
+   смыслу, ей .prose a оставляем как есть (акцентный цвет). */
+.prose .sources__list a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+
+/* =========================================================================
+   Волна 28: bespoke line-art чертежи 3 моделей парка (МКГ-25.01А, Ивановец
+   КС-55717К-1, КБ-403Б) — визуальный якорь в начале страницы модели, до
+   таблицы характеристик (.passport). Тот же hazard-язык, что у Волны 19:
+   жёсткая рамка без единого скругления, чёрно-жёлтая диагональная штриховка
+   на бейджах через ту же pattern-технику, что у .rs-sign (заливка — плоская,
+   штриховка — только в обводке, иначе текст бейджа нечитаем на полосатом
+   фоне), квадратные (не гранёные) бейджи. Три силуэта честно разные:
+   раздвижная гусеница у МКГ, K-опоры на 4-осном шасси у Ивановца, рельсовый
+   ход с план-врезкой колеи у КБ-403Б — а не перекраска одного шаблона. Все
+   подписи на чертежах — цифры, уже стоящие в .passport той же страницы;
+   компонент не хранит собственных фактов. ================================ */
+/* border-image со срезом красит ВСЕ четыре стороны, у которых ненулевая
+   ширина: 2px-рамка панели тоже становилась жёлто-пунктирной, и корпус
+   читался не как «лента предупреждения сверху», а как пунктирный контур
+   выделения. Лента теперь одна и только по верхнему срезу — тем же приёмом,
+   что у .today__hero (::before), то есть одним способом на весь сайт. */
+.model-art {
+  position: relative;
+  margin: clamp(26px, 4vw, 40px) 0 0;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding: calc(8px + clamp(18px, 3vw, 28px)) clamp(16px, 3vw, 26px) clamp(14px, 2vw, 20px);
+}
+.model-art::before, .model-photo::before, .park-atmo__frame::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 11px, var(--bg) 11px 22px);
+}
+.model-art__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.model-art__eyebrow { color: var(--accent); font-weight: 700; font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; }
+.model-art__tag { font-size: var(--fs-2xs); font-weight: 700; color: var(--ink-4); text-transform: uppercase; letter-spacing: .04em; }
+.model-art__svg { width: 100%; height: auto; display: block; }
+.model-art__svg--tower { max-width: 380px; margin-inline: auto; }
+.model-art__cap { margin-top: 14px; font-size: var(--fs-sm); color: var(--ink-4); max-width: 75ch; }
+.ma-frame { stroke: var(--line); stroke-width: 2; fill: none; }
+.ma-ground { stroke: var(--line); stroke-width: 2; }
+.ma-hazard-bg { fill: var(--bg); }
+.ma-hazard-fg { fill: var(--accent); }
+.ma-track { fill: var(--surface); stroke: var(--accent); stroke-width: 3; }
+.ma-track-tick { stroke: var(--line); stroke-width: 1.5; }
+.ma-rail { stroke: var(--accent-2); stroke-width: 3; }
+.ma-tie { stroke: var(--line); stroke-width: 1.5; }
+.ma-body { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.ma-window { fill: var(--bg); stroke: var(--accent); stroke-width: 2; }
+.ma-cw { fill: var(--line); stroke: var(--ink); stroke-width: 2; }
+.ma-boom { fill: var(--surface); stroke: var(--ink); stroke-width: 2.4; }
+.ma-boom-line { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+.ma-boom-seg { stroke: var(--accent-2); stroke-width: 1.5; }
+.ma-jib { stroke: var(--ink); stroke-width: 2; fill: none; stroke-dasharray: 8 6; }
+.ma-mast { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+.ma-pivot { fill: var(--accent); }
+.ma-cable { stroke: var(--accent); stroke-width: 2; fill: none; }
+.ma-hook { fill: var(--accent); }
+.ma-wheel { fill: var(--line); stroke: var(--ink); stroke-width: 2; }
+.ma-hub { fill: var(--bg); }
+.ma-outrigger { stroke: var(--ink); stroke-width: 3; fill: none; }
+.ma-pad { fill: var(--surface); stroke: var(--accent-2); stroke-width: 2; }
+.ma-inset-frame { fill: var(--bg); stroke: var(--line); stroke-width: 2; }
+.ma-dim { stroke: var(--accent-2); stroke-width: 2; fill: none; }
+.ma-dim-dash { stroke: var(--accent-2); stroke-width: 2; fill: none; stroke-dasharray: 6 5; }
+.ma-dim-tick { stroke: var(--accent-2); stroke-width: 2; }
+.ma-dim-dot { fill: var(--accent-2); }
+.ma-dim-text { fill: var(--ink); font-family: var(--display); font-weight: 700; text-transform: uppercase; }
+.ma-dim-text--sub { fill: var(--ink-4); font-weight: 700; text-transform: uppercase; }
+.ma-dim-text--accent { fill: var(--accent); }
+.ma-badge { fill: var(--surface); stroke: url(#maHazard); stroke-width: 8; }
+.ma-badge-text { fill: var(--ink); font-family: var(--display); font-weight: 700; text-anchor: middle; text-transform: uppercase; }
+.ma-badge-text--sub { fill: var(--ink-3); font-weight: 700; }
+@media (max-width: 760px) {
+  .model-art__svg { max-height: 320px; }
+  .model-art__svg--tower { max-height: 460px; max-width: 260px; }
+}
+
+/* =========================================================================
+   Волна 107: фото-первоисточник модели рядом со схемой .model-art — тот же
+   hazard-язык (жёлто-чёрная диагональная лента сверху, острые углы, толстая
+   рамка), но заливка бейджа плоская жёлтая, а не полосатый maHazard-паттерн:
+   на бейджах чертежа паттерн держит текст читаемым за счёт обводки, а тут
+   бейдж — плашка поверх фото, ей нужна сплошная заливка. Фото — не единица
+   нашего парка, поэтому подпись и атрибуция обязательны на каждой странице,
+   где встроен блок. ================================================== */
+.model-photo {
+  position: relative;
+  margin: clamp(26px, 4vw, 40px) 0 0;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding: calc(8px + clamp(18px, 3vw, 28px)) clamp(16px, 3vw, 26px) clamp(14px, 2vw, 20px);
+}
+.model-photo__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.model-photo__eyebrow { color: var(--accent); font-weight: 700; font-size: var(--fs-xs); letter-spacing: .08em; text-transform: uppercase; }
+.model-photo__tag { display: inline-block; background: var(--accent); color: #1A1A1A; font-size: var(--fs-2xs); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; }
+.model-photo img { display: block; width: 100%; height: auto; border: 2px solid var(--line); }
+.model-photo__cap { margin-top: 14px; font-size: var(--fs-sm); color: var(--ink-4); max-width: 75ch; }
+.model-photo__cap a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 2px; }
+.model-photo__cap a:hover { color: var(--accent); }
+
+/* =========================================================================
+   Волна 107: атмосферное фото на хабе /park/ — портовая площадка, не привязана
+   к конкретной модели (для этого есть .model-photo на страницах моделей ниже).
+   Полосная рамка сверху — та же hazard-лента, что у .port-band__strip на
+   главной, но здесь она обрамляет фото, а не SVG-иллюстрацию. ================ */
+.park-atmo { margin-top: 0; }
+.park-atmo__frame {
+  position: relative;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  padding-top: 8px;
+}
+.park-atmo__frame img { display: block; width: 100%; height: auto; max-height: 460px; object-fit: cover; }
+.park-atmo__cap { margin-top: 14px; font-size: var(--fs-sm); color: var(--ink-4); max-width: 75ch; }
+.park-atmo__cap a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 2px; }
+.park-atmo__cap a:hover { color: var(--accent); }
+
+.prose .sources__list a:hover { color: var(--accent); }
+
+/* =========================================================================
+   ТИПОГРАФИКА ПОСЛЕ СМЕНЫ ГАРНИТУР (Roboto Condensed -> Cuprum + Scada).
+
+   Раньше шрифт был один на всё, поэтому никакого распределения ролей не
+   требовалось. Теперь их две, и разделение проходит не по «заголовок/не
+   заголовок», а по способу набора: ВСЁ, что набрано капслоком короткой
+   строкой — бейджи, теги, шапки таблиц, подписи полей, месяцы календаря,
+   пункты меню, — это маркировка, и она идёт Cuprum. Cuprum на 9.2% уже
+   Scada на той же строке капслоком (14.01em против 15.40em, замер fontTools
+   по реальным файлам), а именно у маркировки ширина в дефиците: она стоит
+   в узких ячейках, бейджах и панелях фиксированной высоты.
+
+   Всё, что набрано строчными и читается абзацами, остаётся Scada.
+   ========================================================================= */
+.skip-link,
+.eyebrow,
+.nav__links,
+.nav__mobile-btn,
+.nav__mobile-panel a,
+.calc__field label,
+.calc__result-label,
+.calc__progress-label,
+.calc__option-title,
+.calc__back, .calc__restart,
+.keysy-card__tag,
+.park-card__type,
+.spec-table thead th,
+.callout__label,
+.toc__title,
+.related-card__tag,
+.sources__head,
+.status-panel__today,
+.status-panel__src,
+.status-panel__headline,
+.status-panel__badge,
+.fact-plate__label,
+.fact-plate__num,
+.yearline__month,
+.yearline__regime,
+.passport dt,
+.qa dt,
+.route-card__limit,
+.model-art__eyebrow, .model-art__tag,
+.model-photo__eyebrow, .model-photo__tag {
+  font-family: var(--display);
+}
+
+/* Хвост смены гарнитур: у 38 из 43 страниц <h1> без класса, то есть кегль ему
+   назначал UA-стилями браузер — ровно 2em от body. Пока корень был 16px, это
+   давало 32px; после подъёма корня до 17px (см. вверху файла) те же 2em стали
+   34px, и заголовок вырос на всех страницах разом, никем не заданный явно.
+   На широком экране это незаметно, а на 375px h1 из 108 знаков вставал в
+   8 строк и занимал 310px — весь первый экран уходил под заголовок.
+   Свои кегли уже были только у главной (.today__copy h1) и блога
+   (.article-shell__h1); у обеих специфичность выше, их это правило не трогает.
+   Верх clamp намеренно оставлен ровно 2rem = 34px — десктоп не меняется,
+   сжимается только узкий экран. */
+/* Замер до правки: на /marshruty/, /keysy/ и /kontakty/ h1 был 34.0px, а
+   .section-head h2 на той же странице — 37.4px, то есть заголовок второго
+   уровня был на 10 % КРУПНЕЕ первого. Ни один линтер этого не ловит: единственный
+   h1 на месте, alt на месте, а иерархия перевёрнута.
+   Нижний край clamp не тронут намеренно: 1.5rem на 320–375px — это тот самый
+   предел, ниже которого h1 из 108 знаков ложился в 8 строк и съедал первый
+   экран. Растёт только верх, и только начиная примерно с 560px. */
+h1 { font-size: clamp(1.5rem, .98rem + 2.3vw, 2.5rem); letter-spacing: .015em; }
+/* Заголовок секции опущен под h1: 34px против 42.5px на широком экране. */
+h2 { font-size: clamp(1.3rem, 2.15vw, 1.6rem); }
+h3 { font-size: var(--fs-lg); }
+/* Пять рукописных значений отступа над h2 (32/36/38px сверху, 16/18px снизу),
+   расставленных инлайн-стилями по 30 файлам, сведены к одному токену.
+   Над заголовком места больше, чем под ним — заголовок принадлежит тому,
+   что идёт ПОСЛЕ него. */
+.section > h2 { margin-block: var(--h2-gap) 18px; }
+.section > h2:first-child { margin-block-start: 0; }
+.article-shell__article > h2 { margin-block: var(--h2-gap) 18px; }
+.article-shell__article > h2:first-child { margin-block-start: 0; }
+
+/* Крупные числа-акценты: в Cuprum цифра шире собственной строчной буквы
+   (0.53em против 0.50em x-height), в Scada — 0.58em, то есть на 9% шире.
+   Числа калькулятора и панели статуса — короткие и стоят особняком,
+   в узкой гарнитуре они собираются в плотный блок, а не расплываются. */
+.calc__result b { font-family: var(--display); }
+
+/* Правовые ссылки в подвале: отдельная группа между копирайтом и телефоном,
+   на мобильном уходит на свою строку целиком, а не рвётся посередине. */
+.footer__legal { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer__legal a { text-decoration: underline; text-underline-offset: 3px; }
+.footer__legal a:hover { color: var(--accent); }
+@media (max-width: 760px) { .footer__legal { flex-basis: 100%; order: 3; } }
+
+/* =========================================================================
+   Форма заявки. До этой волны у всего пространства имён .order-form* не было
+   НИ ОДНОГО правила: поля рисовались браузером по умолчанию — белые прямоугольники
+   на почти чёрном фоне, подписи в одну строку с полем, между полями ничего.
+   Поводом стал обязательный чекбокс согласия: галочка, которую посетитель обязан
+   найти и осознанно поставить, не может быть системным квадратиком, приклеенным
+   к строке текста. Правила ниже — те же токены и та же геометрия, что у уже
+   принятого на сайте .calc__field (рамка 2px --accent-2, острые углы, подпись
+   капслоком сверху): не новый визуальный язык, а распространение имеющегося.
+   ========================================================================= */
+.order-form { display: grid; gap: 16px; max-width: 520px; }
+.order-form__hint { font-size: var(--fs-sm); color: var(--ink-3); }
+.order-form__req { color: var(--accent); }
+.order-form__field { display: grid; gap: 6px; }
+.order-form__field label {
+  font-family: var(--display);
+  font-size: var(--fs-xs); color: var(--ink-4); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.order-form__field input {
+  background: var(--bg); border: 2px solid var(--accent-2); color: var(--ink);
+  padding: 11px 12px; font-family: inherit; font-size: var(--fs-md); min-height: 46px; width: 100%;
+}
+.order-form__field input::placeholder { color: #8A8781; }
+.order-form__field input[aria-invalid="true"] { border-color: var(--accent); }
+.order-form__error { font-size: var(--fs-sm); color: var(--accent); font-weight: 700; }
+.order-form__status { font-size: var(--fs-sm); color: var(--ink-2); }
+
+/* Согласие: чекбокс и подпись — одна строка, но подпись переносится под себя,
+   а не под квадратик. 20px + вертикальные отступы подписи дают тап-таргет
+   заведомо выше 24px (WCAG 2.5.8), как у ссылок в подвале. */
+.order-form__consent { display: flex; align-items: flex-start; gap: 11px; }
+.order-form__consent input {
+  width: 20px; height: 20px; margin: 3px 0 0; flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.order-form__consent label {
+  font-size: var(--fs-sm); color: var(--ink-3); line-height: 1.45; padding-block: 2px;
+}
+.order-form__consent a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.order-form__consent a:hover { color: var(--accent); }
+
+/* <picture> — контейнер выбора формата, а не элемент раскладки. display:contents
+   убирает его из дерева боксов, и уже написанные правила вида «.park-card--photo img»
+   продолжают работать так же, как до оборачивания: ширина считается от карточки,
+   а не от инлайнового <picture> с его shrink-to-fit. */
+picture { display: contents; }
+
+/* Границы расчёта под калькулятором: две колонки «входит / не входит» и оговорка
+   про оферту. Геометрия та же, что у .calc__options выше (две колонки, схлопываются
+   в одну на узком экране), рамка-сверху вместо новой панели — блок читается как
+   продолжение результата, а не как отдельная карточка. */
+.calc__scope { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; border-top: 2px dashed var(--line); padding-top: 14px; }
+.calc__scope-head {
+  display: block; font-family: var(--display); font-size: var(--fs-2xs); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--accent); margin-bottom: 7px;
+}
+.calc__scope-col ul { margin: 0; padding-left: 17px; display: grid; gap: 5px; }
+.calc__scope-col li { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.4; }
+.calc__disclaimer { font-size: var(--fs-xs); color: var(--ink-4); line-height: 1.45; border-left: 3px solid var(--accent-2); padding-left: 12px; }
+.calc__disclaimer strong { color: var(--ink); }
+@media (max-width: 520px) { .calc__scope { grid-template-columns: 1fr; } }
+
+/* =========================================================================
+   Волна визуальной полировки. Всё ниже — состояния и поверхности, которых
+   у сайта не было вовсе, плюс перевод уже принятых приёмов на общий такт.
+   Ни одного нового цвета: только --accent, --accent-2, --line, --bg,
+   --surface, --deck и три ступени текста.
+   ========================================================================= */
+
+/* ── Состояние нажатия ────────────────────────────────────────────────────
+   Ни у одного элемента сайта не было :active. Плашка-карточка при нажатии
+   садится обратно на своё место: hazard-оттиск ужимается с 8px до 3px,
+   то есть трафарет прижимают к борту, а не отрывают от него. */
+a.uslugi-card:active, a.park-card:active, a.keysy-card:active, a.post-card:active {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 0 var(--accent), inset 0 0 0 2px var(--bg);
+}
+a.route-card:active, a.box:active {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 2px var(--accent), 0 3px 0 0 rgba(0, 0, 0, .35);
+}
+.calc__option:active { transform: translateY(0); }
+.crumbs a:active, .footer a:active, .sources__list a:active, .prose a:active { color: #ffb84d; }
+@media (prefers-reduced-motion: reduce) {
+  a.uslugi-card:active, a.park-card:active, a.keysy-card:active,
+  a.post-card:active, a.route-card:active, .box:active, .btn:active { transform: none; }
+}
+
+/* ── Нерабочая кнопка ─────────────────────────────────────────────────────
+   lead-form.js на время отправки ставит disabled и меняет надпись на
+   «Отправляем…», но выглядела кнопка при этом ровно как рабочая. */
+.btn:disabled {
+  background: var(--line);
+  color: var(--ink-4);
+  box-shadow: 0 3px 0 0 #2A2A2A;
+  cursor: progress;
+}
+.btn:disabled:active { transform: none; }
+
+/* ── Поле с ошибкой ───────────────────────────────────────────────────────
+   Было только изменение цвета рамки. Добавлена толстая сигнальная кромка
+   слева и подложка: ошибка видна и на монохромном экране, и боковым зрением. */
+.order-form__field input[aria-invalid="true"] {
+  border-color: var(--accent);
+  border-left-width: 6px;
+  background: #241E12;
+}
+/* :not([hidden]) обязателен: display:flex сильнее UA-правила [hidden]{display:none},
+   и без него пустая плашка ошибки висела бы под каждым полем всегда. */
+.order-form__error:not([hidden]) { display: flex; gap: 8px; align-items: baseline; }
+.order-form__error::before { content: "!"; font-family: var(--display); color: var(--bg); background: var(--accent); padding: 0 6px; flex: none; }
+
+/* ── Числа ────────────────────────────────────────────────────────────────
+   Сайт на две трети состоит из чисел: тонны на ось, даты, номера приказов,
+   вылеты стрелы. В пропорциональных цифрах колонка таблицы «пляшет» —
+   моноширинные ставят их в столбик. */
+.spec-table, .yearline, .passport dd, .status-panel__limit,
+.calc__option-sub, .park-card__spec, .fact-plate__num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Врезка-предупреждение ────────────────────────────────────────────────
+   Плоская акцентная полоса слева — самый заезженный способ показать
+   «важно». Здесь она заменена на сигнальную ленту: тот же приём, что у
+   палубной линии секций и у среза панелей, поэтому врезка читается как
+   предупреждающая маркировка, а не как цитата из блога. Оглавление и
+   список «вопрос — ответ» свою ровную полосу сохраняют — у них другой
+   регистр (навигация и ответ, а не предупреждение). */
+.callout {
+  border-left: 8px solid;
+  border-image: repeating-linear-gradient(45deg, var(--accent) 0 8px, var(--bg) 8px 16px) 8;
+}
+
+/* ── Каскад появления ─────────────────────────────────────────────────────
+   Раньше каждая карточка проявлялась сама по себе и все разом. Теперь ряд
+   заходит волной с шагом 70 мс — одно движение на сетку, а не семь
+   одинаковых. Задержка только на анимации появления: hover и нажатие
+   реагируют мгновенно. */
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(2) { transition-delay: 70ms; }
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(3) { transition-delay: 140ms; }
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(4) { transition-delay: 210ms; }
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(5) { transition-delay: 280ms; }
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(6) { transition-delay: 350ms; }
+:where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal:nth-child(n+7) { transition-delay: 420ms; }
+@media (prefers-reduced-motion: reduce) {
+  :where(.route-grid, .uslugi-grid, .park-grid, .keysy-grid, .related-grid, .post-list) > .reveal { transition-delay: 0s; }
+}
+
+/* ── Карточка статьи ──────────────────────────────────────────────────────
+   На /blog/ четыре анонса были собраны прямо в разметке: display:block,
+   padding:28px, font-size:1.1rem, color:#B8B5AC — восемь инлайн-объявлений
+   на карточку, четыре раза подряд, ни одного правила в CSS. Компонент
+   собран из того, что у сайта уже есть: срез сигнальной ленты сверху,
+   стальная рамка, hazard-оттиск при наведении. */
+.post-list { display: grid; gap: 2px; background: var(--line); border: 2px solid var(--line); margin-top: clamp(28px, 3.4vw, 40px); }
+.post-card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  padding: clamp(22px, 2.6vw, 30px);
+  text-decoration: none;
+  transition: transform var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.post-card::before {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: 44px; height: 5px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, transparent 5px 10px);
+}
+.post-card__title { font-size: var(--fs-lg); text-transform: none; margin: 0; }
+.post-card__desc { margin-top: 10px; color: var(--ink-3); font-size: var(--fs-sm); max-width: 62ch; }
+.post-card__go { margin-top: 16px; color: var(--accent); font-family: var(--display); font-weight: 700; font-size: var(--fs-2xs); letter-spacing: .1em; text-transform: uppercase; }
+a.post-card:hover, a.post-card:focus-visible {
+  transform: translate(-5px, -5px);
+  box-shadow: 8px 8px 0 0 var(--accent), inset 0 0 0 2px var(--bg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-card { transition: none; }
+  a.post-card:hover, a.post-card:focus-visible { transform: none; }
+}
+
+/* =========================================================================
+   Волна 129 — что видно на кадре телефона 375×812.
+
+   Съёмка экранами (tools/shoot_mobile.mjs) показала три вещи, которых не
+   видит ни один замер в DOM.
+   ========================================================================= */
+
+/* ── 1. Обрезанная подпись таблицы ────────────────────────────────────────
+   <caption> живёт ВНУТРИ <table>, а у .spec-table задан min-width 620px
+   в контейнере с overflow-x. Ширину подпись берёт от таблицы, а не от
+   экрана — и на 375px каждая из 29 подписей сайта обрывалась по правому
+   краю посреди слова: «Четыре вопроса, вокруг которых собраны все р…».
+   Обрыв читается не как «таблицу можно потянуть», а как сломанная вёрстка,
+   причём именно на том единственном элементе, где сказано, ЧТО показывает
+   таблица.
+
+   Подпись не вынесена из <table> — там она нужна и по смыслу, и для
+   скринридера. Вместо этого ей дана ширина КОНТЕЙНЕРА, а не содержимого:
+   .spec-wrap объявлен инлайновым контейнером запроса, подпись меряется
+   в 100cqi. sticky left:0 держит её на месте, когда таблицу тянут вбок, —
+   без него подпись уезжала бы влево вместе со столбцами. */
+.spec-wrap { container-type: inline-size; }
+.spec-table caption {
+  position: sticky;
+  left: 0;
+  width: 100cqi;
+  box-sizing: border-box;
+}
+/* Пока подпись была обрезана, «тут ещё есть» было не прочитать никак:
+   полосы прокрутки на телефоне нет, столбец просто кончался у края экрана.
+   Метка ставится там, где таблица заведомо шире колонки (при min-width 620px
+   это любой экран у́же ~680px), и набрана тем же капслоком-маркировкой, что
+   шапки таблиц и бейджи, — это подпись прибора, а не подсказка-«туториал». */
+@media (max-width: 680px) {
+  .spec-table caption::after {
+    content: "таблица тянется вбок →";
+    display: block;
+    margin-top: 9px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--fs-2xs);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+}
+
+/* ── 2. Заголовок, приклеенный к подписи под фото ─────────────────────────
+   На /park/ секция после атмосферного кадра несёт инлайновый padding-top:0,
+   и h2 «Почему выбор идёт не от тоннажа» садился ВПЛОТНУЮ к последней
+   строке подписи фотографии — семь строк служебного серого текста и сразу
+   капслок заголовка, без единого пикселя между ними. На кадре это читается
+   как один слипшийся блок, а не как конец одного раздела и начало другого. */
+.park-atmo { margin-bottom: clamp(30px, 4vw, 48px); }
+
+/* ── 3. Перенесённый остаток лида, набранный кеглем лида ──────────────────
+   Волна 128 унесла два абзаца из hero вниз, под плашку фактов, — но кегль
+   у них остался лидовый (19.7px/1.5 от .today__copy .prose). На третьем
+   экране телефона это давало 9 и 11 строк подряд: сплошная светлая стена
+   без единой цифры, картинки или отбивки. Слова не тронуты — эти абзацы
+   больше не лид, и набраны они теперь как основной текст. */
+.today__copy--more .prose {
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  max-width: 63ch;
+}
+
+/* ── 4. Ставки на внутренних страницах ────────────────────────────────────
+   Компонент .park-rates жил ровно на одной странице. Числа те же самые
+   (src/js/calculator.js), поэтому он вынесен в общий блок и ставится под
+   лидом страниц направлений и услуг: человек, пришедший из поиска сразу
+   на «Всеволожское направление», до этой волны не видел цены нигде, кроме
+   липкой панели «Заказать кран».
+
+   Селектор — p.rates-line, а не .rates-line: на /keysy/ компонент попадает
+   внутрь .section-head, у которого правило «.section-head p» (0,1,1) сильнее
+   одного класса и переписывало компоненту и кегль, и регистр — на одной
+   странице сети ставки выглядели одним образом, на другой другим. */
+p.rates-line {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 22px;
+  margin-top: clamp(18px, 2.6vw, 26px);
+  max-width: 30rem;
+  position: relative;
+  padding: 14px 16px 15px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-size: var(--fs-sm);
+  line-height: 1.3;
+  color: var(--ink-4);
+}
+/* Тот же угловой оттиск сигнальной ленты, что у ячеек ставок в hero главной
+   (.today__rate::before): панель опознаётся как показание прибора этого
+   сайта, а не как рамка вокруг цены. */
+p.rates-line::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 30px; height: 4px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, transparent 5px 10px);
+}
+/* Само число — строчными: капслок наследовался от контейнера, и
+   «ОТ 4 000 ₽/ЧАС» кричало на странице громче её собственного h1.
+   Решение то же, что уже принято для .park-rates__item b. */
+p.rates-line b {
+  color: var(--accent);
+  font-size: var(--fs-lg);
+  letter-spacing: .01em;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rates-line__item { display: flex; align-items: baseline; gap: 9px; }
+p.rates-line .rates-line__note {
+  flex-basis: 100%;
+  font-family: var(--sans);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--ink-4);
+}
+.rates-line__note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.rates-line__note a:hover { color: #ffb84d; }
+
+/* ── 5. Абзацы, идущие подряд без единого просвета ────────────────────────
+   .prose p + p давал отбивку только тем абзацам, у которых .prose висит
+   на РОДИТЕЛЕ. Там, где класс стоит на самих абзацах — а так свёрстаны
+   страницы направлений, — соседние <p class="prose"> шли вплотную: на кадре
+   375×812 «…лимит 5 т на ось.» и «Шестое плечо области…» читались как один
+   абзац в двенадцать строк, и ссылка «Назвать площадку…» прилипала к нему
+   же. Правило добирает ровно этот случай тем же шагом 18px. */
+.prose + .prose { margin-top: 18px; }
+
+/* =========================================================================
+   Волна 130 — таблица в руке.
+
+   Съёмка 375×812 показала то, чего не видит ни один замер ширины: страница
+   честно укладывается в 375 (scrollWidth == clientWidth), а справочная
+   таблица внутри своего .spec-wrap всё равно читается как сломанная.
+   Высоту строки задаёт самая длинная ячейка — колонка «Источник и дата
+   проверки», уехавшая за правый край. Видимая часть строки при этом
+   вертикально прижата вверх, и под ней остаётся пустота: замер на главной
+   дал 121, 121, 51 и 51 px чистого ничего внутри строк с рамкой.
+   На кадре это не «таблицу можно потянуть», а дырка в вёрстке.
+
+   Плюс сам жест: чтобы прочитать четвёртую колонку, надо догадаться
+   потянуть таблицу вбок пальцем, попав ровно в неё и не пролистав страницу.
+   Справочная таблица — главное содержимое этого сайта, и оно оказалось
+   спрятано за жест.
+
+   Ниже 760px таблица разворачивается в столбик карточек: строка — карточка,
+   заголовок строки — её шапка, каждая ячейка — подпись колонки плюс
+   значение. Подпись берётся из data-label, проставленного по <thead> той же
+   таблицы (356 ячеек, 29 таблиц) — ни одного нового слова.
+
+   Раскладка повторяет .passport, который на этом сайте уже описывает плечо
+   подачи: капслок-маркировка сигнальным цветом над значением. Роли ARIA
+   проставлены в разметке явно, потому что display:block снимает у таблицы
+   родные.
+   ========================================================================= */
+@media (max-width: 760px) {
+  /* Обёртка больше не скроллер: тянуть нечего, всё в колонку.
+     Рамку и container-type забирает сама таблица. */
+  .spec-wrap {
+    overflow-x: visible;
+    border: none;
+    container-type: normal;
+  }
+  .spec-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-size: var(--fs-md);
+    border: 2px solid var(--line);
+  }
+  .spec-table caption {
+    display: block;
+    position: static;
+    width: auto;
+    background: var(--bg);
+  }
+  /* «таблица тянется вбок →» — подсказка Волны 129 — перестала быть правдой. */
+  .spec-table caption::after { content: none; }
+  /* Шапка вынесена в подписи ячеек: на экране она была бы 29 раз повторённой
+     строкой. Из дерева доступности не выкинута — роли строк и ячеек стоят
+     в разметке, а связь значения с колонкой теперь видна глазом. */
+  .spec-table thead { display: none; }
+  .spec-table tbody { display: block; }
+  .spec-table tbody tr {
+    display: block;
+    border-bottom: 2px solid var(--line);
+  }
+  .spec-table tbody tr:last-child { border-bottom: none; }
+  /* Шапка карточки: то же, чем на этом сайте набрана маркировка. */
+  .spec-table tbody th[scope="row"] {
+    display: block;
+    padding: 13px 15px 12px;
+    background: var(--surface);
+    border-bottom: 2px solid var(--line);
+    font-family: var(--display);
+    font-size: var(--fs-lg);
+    line-height: 1.2;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .spec-table tbody td {
+    display: block;
+    padding: 11px 15px 12px;
+    border-bottom: 2px solid var(--line);
+  }
+  .spec-table tbody tr > td:last-child { border-bottom: none; }
+  .spec-table tbody td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--fs-2xs);
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  /* Ячейка без подписи (её колонка не объявлена) не должна оставлять
+     пустую строку над значением. */
+  .spec-table tbody td[data-label=""]::before { content: none; margin: 0; }
+  /* Подсветка текущего месяца в календаре держалась на фоне ячеек —
+     в столбике фон у ячеек прозрачный, метку несёт левый торец карточки. */
+  .spec-table tbody tr.is-now { box-shadow: inset 6px 0 0 0 var(--accent); }
+  .spec-table tbody tr:hover th, .spec-table tbody tr:hover td { background: none; }
+}
+
+/* ── Волна 130: подпись, которая уже была написана, но не была видна ───────
+   На кадрах внутренних страниц абзац в 14–22 строки занимает экран целиком:
+   «29 июня 2026 года Ozon запустил…» — 16 строк подряд, семь чисел внутри
+   сплошной серой массы. Разбирать такие абзацы словами нельзя (факты
+   выверены), но разбирать их и не нужно: сайт уже написан размеченным.
+   93 пункта списков и десятки абзацев начинаются с <b>Название.</b> —
+   «Задача.», «Итог сценария.», «Трал.», «Стадия монтажа.» — то есть с
+   готовой подписи, которая до сих пор рисовалась просто жирным текстом
+   в той же строке и на телефоне не читалась вовсе.
+
+   Подпись поднимается на свою строку и набирается заголовочной Cuprum
+   сигнальным цветом — ровно тем же приёмом «маркировка над значением»,
+   которым на этом сайте уже устроены .passport dt, .callout__label и
+   ярлык лимита на карточке плеча. Ни одно слово не тронуто; меняется
+   только то, на какой строке слово стоит. Регистр оставлен авторский:
+   капслок здесь встал бы на топонимы и кавычки («Юкки — Кузьмоловский»)
+   и читался бы хуже, а не лучше. */
+/* Только абзацы и пункты списков: в .passport <b> несёт не подпись, а само
+   значение («5 т на ось с 20 марта…»), и поднимать его на свою строку нельзя —
+   там подпись уже есть, это <dt>. */
+:is(.prose, .article-shell__article, .checklist, .callout) :is(p, li) > b:first-child {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.25;
+  color: var(--accent);
+}
+/* Ставки — не подпись к абзацу: там <b> несёт само число. */
+.rates-line b, .park-rates b, .today__rate-num { display: inline; }
+
+/* ── Волна 130: где кончается один разбор и начинается следующий ───────────
+   Заголовки внутри статьи (h2 прямо в .prose) — единственные на сайте, у
+   которых нет палубной линии .section-head::before/::after: секции сверху
+   размечены, а разборы на страницах направлений, услуг и статей идут одним
+   столбцом, где h2 отличается от абзаца только кеглем. На узком экране
+   заголовок при этом почти всегда оказывается один на экране, без своего
+   текста, и граница разделов теряется. Метка та же, что у шапки секции. */
+:is(.section, .wrap.prose, .article-shell__article) > h2 {
+  position: relative;
+  padding-top: 17px;
+}
+:is(.section, .wrap.prose, .article-shell__article) > h2::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 2px; background: var(--line);
+}
+:is(.section, .wrap.prose, .article-shell__article) > h2::after {
+  content: "";
+  position: absolute; left: 0; top: 0;
+  width: 68px; height: 5px;
+  background: repeating-linear-gradient(45deg, var(--accent) 0 5px, transparent 5px 10px);
+}

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Маршруты подачи крана в Ленобласти — покрытие и лимит осей</title>
+  <meta name="description" content="Восемь плеч подачи техники в Ленобласти: статус дороги в сезонном приказе, покрытие и разрешённая нагрузка на ось. Плечо решает больше, чем район." />
+  <link rel="canonical" href="https://kran-lo.example/marshruty/" />
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="alternate icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#1A1A1A" />
+  
+  <link rel="preload" href="/fonts/cuprum-cyrillic-var-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/scada-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Маршруты подачи крана в Ленобласти — покрытие и лимит осей" />
+  <meta property="og:description" content="Восемь плеч подачи техники в Ленобласти: статус дороги в сезонном приказе, покрытие и разрешённая нагрузка на ось. Плечо решает больше, чем район." />
+  <meta property="og:url" content="https://kran-lo.example/marshruty/" />
+  <meta property="og:site_name" content="КРАН-ЛО" />
+  <meta property="og:locale" content="ru_RU" />
+  
+  <meta property="og:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="КРАН-ЛО, Ленинградская область: сначала дата и дорога, потом модель" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://kran-lo.example/#organization","name":"КРАН-ЛО","telephone":"+79647243176","email":"info@kran-lo.example","url":"https://kran-lo.example","priceRange":"₽₽","address":{"@type":"PostalAddress","addressRegion":"Ленинградская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":59.6636,"longitude":28.3372},"areaServed":"Ленинградская область","openingHours":"Mo-Su 00:00-24:00"}</script>
+  
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://kran-lo.example/"},{"@type":"ListItem","position":2,"name":"Маршруты","item":"https://kran-lo.example/marshruty/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Трасса на Усть-Лугу тоже закрывается на весеннюю просушку?","acceptedAnswer":{"@type":"Answer","text":"В 2026 году — нет, и сразу по двум причинам. Основной подъезд к порту — федеральный: 52-километровая дорога, построенная Росавтодором от трассы A-180 «Нарва», а региональный приказ издаётся по дорогам регионального значения. Плюс сам приказ вывел из-под весеннего ограничения км 220+000 – км 263+456 региональной дороги «Псков – Гдов – Сланцы – Кингисепп – Краколье». Закрывались съезды с этого плеча на местные дороги, а не оно само."}},{"@type":"Question","name":"Почему вы описываете маршруты, а не районы?","acceptedAnswer":{"@type":"Answer","text":"Потому что ограничение вводится не по районам, а по конкретным дорогам и километрам. Два объекта в одном районе могут стоять по разные стороны от границы ограничения: один на федеральном подъезде, другой на грунтовом съезде с пределом 3 тонны на ось. Название района не отвечает на вопрос, доедет ли техника, а статус плеча отвечает."}},{"@type":"Question","name":"Чем заявка на кран в область отличается от заявки в черте Петербурга?","acceptedAnswer":{"@type":"Answer","text":"Тремя вещами, которых в городе просто нет. Первое — маршрут идёт по региональным дорогам, у которых есть сезонный приказ по осевым нагрузкам. Второе — площадка чаще без твёрдого покрытия, и от этого зависит тип хода. Третье — на части объектов действует внешний режим допуска: терминал порта, пограничная зона, особо охраняемая природная территория. В городе заявка упирается в парковку и согласование перекрытия, в области — в дорогу, грунт и пропуск."}}]}</script>
+</head>
+<body>
+  <!-- .reveal class is written statically in markup and hidden via CSS until JS adds .is-visible.
+       Without working JS that never happens — this noscript override keeps the content visible
+       for no-JS users and non-JS-executing crawlers (found in a post-Волна-10 a11y audit). -->
+  <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+  <header class="nav">
+    <div class="nav__row wrap">
+      <a class="brand" href="/">КРАН<span>-ЛО</span></a>
+      <nav class="nav__links" aria-label="Основная навигация">
+        <a href="/kalendar/">Календарь</a>
+        <a href="/marshruty/" aria-current="page">Маршруты</a>
+        <a href="/#uslugi">Что подаём</a>
+        <a href="/park/">Парк техники</a>
+        <a href="/keysy/">Примеры задач</a>
+        <a href="/documents/">Допуски</a>
+        <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+      </nav>
+      <a class="nav__order-btn" href="/#order">Заказать кран</a>
+      
+      <details class="nav__mobile" data-nav-mobile>
+        <summary class="nav__mobile-btn">
+          <span class="nav__mobile-bars" aria-hidden="true"></span>Меню
+        </summary>
+        <nav class="nav__mobile-panel" aria-label="Мобильная навигация">
+          <a href="/kalendar/">Календарь ограничений</a>
+          <a href="/marshruty/" aria-current="page">Маршруты подачи</a>
+          <a href="/#uslugi">Что подаём</a>
+          <a href="/park/">Парк техники</a>
+          <a href="/keysy/">Примеры задач</a>
+          <a href="/documents/">Допуски</a>
+          <a href="/blog/">Блог</a>
+          <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <div id="main-content" tabindex="-1"><main>
+  <nav class="crumbs wrap" aria-label="Хлебные крошки">
+    <a href="/">Главная</a><span>/</span><span>Маршруты</span>
+  </nav>
+
+  <section class="section wrap" style="padding-top:8px">
+    <h1>Маршруты подачи: покрытие дороги и разрешённая нагрузка</h1>
+    
+<p class="rates-line">
+  <span class="rates-line__item">Автокран <b>от 4 000 ₽/час</b></span>
+  <span class="rates-line__item">Гусеничный <b>от 6 000 ₽/час</b></span>
+  <span class="rates-line__note">Смена 8 часов — минимальный заказ. <a href="/#calculator-block">Посчитать смену →</a></span>
+</p>
+
+    <p class="prose" style="margin-top:16px">Сезонное ограничение вводится не по районам, а по дорогам и километрам. Поэтому раздел устроен по плечам подачи, а не по названиям муниципальных образований: два объекта в одном и том же районе могут стоять по разные стороны границы ограничения — один на федеральном подъезде, второй на грунтовом съезде с пределом 3 тонны на ось.</p>
+
+    <div class="spec-wrap">
+      <table role="table" class="spec-table">
+        <caption>Восемь плеч подачи техники в Ленинградской области. Статусы — по приказу № 5/26 от 10 марта 2026 года, проверено 12.08.2026.</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader" scope="col">Плечо</th>
+            <th role="columnheader" scope="col">Статус дороги</th>
+            <th role="columnheader" scope="col">Покрытие</th>
+            <th role="columnheader" scope="col">Весна 20.03–18.04</th>
+            <th role="columnheader" scope="col">Лето 01.06–31.08</th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/ust-luga-port/">Кингисепп — порт Усть-Луга</a></th>
+            <td role="cell" data-label="Статус дороги">Федеральная A-180 «Нарва» + подъезд Росавтодора</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон</td>
+            <td role="cell" data-label="Весна 20.03–18.04">Региональный приказ не применяется</td>
+            <td role="cell" data-label="Лето 01.06–31.08">Региональный приказ не применяется</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/karery-volosovo/">Волосовское направление и карьеры</a></th>
+            <td role="cell" data-label="Статус дороги">Региональная сеть + внутренние дороги предприятия</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон, дальше гравий и грунт</td>
+            <td role="cell" data-label="Весна 20.03–18.04">5 т/ось до съезда, <b>3 т/ось</b> после</td>
+            <td role="cell" data-label="Лето 01.06–31.08">Окно 10:00–22:00 в дни жарче +32 °C</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/gruntovki-i-sezdy/">Грунтовки и местные съезды</a></th>
+            <td role="cell" data-label="Статус дороги">Региональная и местная сеть</td>
+            <td role="cell" data-label="Покрытие">Гравий, грунт</td>
+            <td role="cell" data-label="Весна 20.03–18.04"><b>3 т/ось</b></td>
+            <td role="cell" data-label="Лето 01.06–31.08">Ограничение по жаре введено для асфальтобетона</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/asfaltobeton-gatchina-lomonosov/">Асфальтобетон: Гатчина и Ломоносов</a></th>
+            <td role="cell" data-label="Статус дороги">Региональная сеть с твёрдым покрытием</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон</td>
+            <td role="cell" data-label="Весна 20.03–18.04"><b>5 т/ось</b></td>
+            <td role="cell" data-label="Лето 01.06–31.08">Окно 10:00–22:00 в дни жарче +32 °C</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/vyborgskoe-napravlenie/">Выборгское направление</a></th>
+            <td role="cell" data-label="Статус дороги">Федеральная A-181 «Скандинавия» + региональная A-123</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон</td>
+            <td role="cell" data-label="Весна 20.03–18.04">На A-181 не применяется, на A-123 — <b>5 т/ось</b></td>
+            <td role="cell" data-label="Лето 01.06–31.08">На A-181 не применяется, на A-123 — окно 10:00–22:00 в жару</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/vsevolozhskoe-napravlenie/">Всеволожское направление</a></th>
+            <td role="cell" data-label="Статус дороги">Рядом федеральная КАД (А-118), подъезд к площадкам — региональная сеть</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон</td>
+            <td role="cell" data-label="Весна 20.03–18.04"><b>5 т/ось</b> на региональном подъезде</td>
+            <td role="cell" data-label="Лето 01.06–31.08">Окно 10:00–22:00 в дни жарче +32 °C</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/priozerskoe-napravlenie/">Приозерское направление</a></th>
+            <td role="cell" data-label="Статус дороги">Федеральная А-121 «Сортавала» почти до места, региональный подъезд к Орехово/Сосново</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон на А-121; покрытие региональных участков не подтверждено</td>
+            <td role="cell" data-label="Весна 20.03–18.04">На А-121 не применяется; на региональной сети — <b>5 т/ось</b> или <b>3 т/ось</b> по факту покрытия</td>
+            <td role="cell" data-label="Лето 01.06–31.08">Окно 10:00–22:00 в жару, если покрытие асфальтобетонное</td>
+          </tr>
+          <tr role="row">
+            <th role="rowheader" scope="row"><a href="/marshruty/luzhskoe-napravlenie/">Лужское направление</a></th>
+            <td role="cell" data-label="Статус дороги">Федеральная Р-23 «Псков» + региональные 41К-249 и 41А-186 (связка через Осьмино)</td>
+            <td role="cell" data-label="Покрытие">Асфальтобетон на всех участках</td>
+            <td role="cell" data-label="Весна 20.03–18.04">На Р-23 не применяется; на региональных — <b>5 т/ось</b></td>
+            <td role="cell" data-label="Лето 01.06–31.08">Окно 10:00–22:00 в дни жарче +32 °C на региональных участках</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section wrap" style="padding-top:0">
+    <div class="prose">
+      <h2>Почему плечо важнее района</h2>
+      <p>Раздел «география» на сайтах спецтехники обычно устроен как список районов, где под каждым написано одно и то же разными словами. Для Ленинградской области это не просто скучно, а неверно по сути: приказ № 5/26 перечисляет исключения не районами, а километрами — например, км 220+000 – км 263+456 дороги «Псков – Гдов – Сланцы – Кингисепп – Краколье» и км 0+000 – км 4+000 дороги «Лужицы – Первое Мая». Обе точки лежат в Кингисеппском районе, и обе — исключения, тогда как соседние местные дороги того же района закрыты.</p>
+      <p>Второй слой — статус дороги по собственнику. Приказ издан по дорогам общего пользования <b>регионального</b> значения. Федеральная A-180 «Нарва» (Санкт-Петербург — Ивангород — граница с Эстонией, 148 км, часть европейского маршрута E 20) и построенный Росавтодором 52-километровый подъезд к морскому торговому порту Усть-Луга под него не подпадают вообще. Это не лазейка и не льгота — это разные владельцы дорог с разными полномочиями по ограничению движения.</p>
+      <p>Третий слой — последний километр. Открытое плечо почти никогда не доводит до самой площадки: последними идут съезд, внутриплощадочный проезд или дорога предприятия. Именно там лимит 3 тонны на ось, там же начинается пропускной режим, и именно этот участок чаще всего срывает график, хотя в заявке он занимает одну строку адреса.</p>
+    </div>
+  </section>
+
+  <section class="section wrap" style="padding-top:0">
+    <div class="section-head">
+      <span class="eyebrow">Восемь плеч</span>
+      <h2>Паспорт каждого направления</h2>
+    </div>
+    <div class="route-grid">
+      <a class="route-card reveal" href="/marshruty/ust-luga-port/">
+        <span class="route-card__limit">Вне регионального приказа</span>
+        <h3>Кингисепп — порт Усть-Луга</h3>
+        <p>Федеральное плечо к главному объекту направления. Ограничивает не сезон, а пропускной режим терминала и спецразрешение на трал.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/karery-volosovo/">
+        <span class="route-card__limit">Весной 3 т/ось после съезда</span>
+        <h3>Волосовское направление и карьеры</h3>
+        <p>Кикерино и Корчаны: асфальт до поворота, дальше гравий и внутренние дороги действующего предприятия со своим регламентом.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/gruntovki-i-sezdy/">
+        <span class="route-card__limit">Весной 3 т/ось</span>
+        <h3>Грунтовки и местные съезды</h3>
+        <p>Самый жёсткий лимит области и самая частая причина переноса даты. Здесь честный ответ чаще «не в этот месяц», чем «другая машина».</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/asfaltobeton-gatchina-lomonosov/">
+        <span class="route-card__limit">Весной 5 т/ось, летом окно</span>
+        <h3>Асфальтобетон: Гатчина и Ломоносов</h3>
+        <p>Плечи ближе к городу: весной лимит вдвое мягче, зато летом появляется температурное окно, о котором вспоминают реже всего.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/vyborgskoe-napravlenie/">
+        <span class="route-card__limit">Два статуса дороги сразу</span>
+        <h3>Выборгское направление</h3>
+        <p>Приморск и Высоцк: федеральный ствол без приказа, региональный подъезд под ним же — и погранзона другой границы, финской, а не эстонской.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/vsevolozhskoe-napravlenie/">
+        <span class="route-card__limit">Кольцо рядом, лимит — на месте</span>
+        <h3>Всеволожское направление</h3>
+        <p>Складской кластер Порошкино и Бугров: федеральная КАД проходит рядом, но сама площадка — на региональном подъезде под полным приказом.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/priozerskoe-napravlenie/">
+        <span class="route-card__limit">Федеральный ствол почти до места</span>
+        <h3>Приозерское направление</h3>
+        <p>Орехово и Сосново: федеральная А-121 «Сортавала» без приказа почти до поворота, дальше — региональный подъезд к площадке курортного комплекса.</p>
+      </a>
+      <a class="route-card reveal" href="/marshruty/luzhskoe-napravlenie/">
+        <span class="route-card__limit">Один мост открыт, второй — на подходе</span>
+        <h3>Лужское направление</h3>
+        <p>Плоское: завод «Петербургское стекло» на связке Р-23 и объезда через Осьмино, где капремонт моста через Сабу больше не держит технику.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section wrap" style="padding-top:0">
+    <div class="section-head">
+      <span class="eyebrow">Вопросы по маршрутам</span>
+      <h2>Что спрашивают про дорогу до объекта</h2>
+    </div>
+    <dl class="qa">
+      <dt>Трасса на Усть-Лугу тоже закрывается на весеннюю просушку?</dt>
+      <dd>В 2026 году — нет, и сразу по двум причинам. Основной подъезд к порту федеральный: 52-километровая дорога, построенная Росавтодором от трассы A-180 «Нарва», а региональный приказ издаётся по дорогам регионального значения. Плюс сам приказ вывел из-под весеннего ограничения км 220+000 – км 263+456 региональной дороги «Псков – Гдов – Сланцы – Кингисепп – Краколье». Закрывались съезды с этого плеча на местные дороги, а не оно само — <a href="/marshruty/ust-luga-port/">паспорт плеча</a>.</dd>
+
+      <dt>Почему вы описываете маршруты, а не районы?</dt>
+      <dd>Потому что ограничение вводится по конкретным дорогам и километрам, а не по границам муниципальных образований. Название района не отвечает на вопрос «доедет ли техника»: в одном районе одновременно бывает и федеральный подъезд без ограничений, и грунтовый съезд с пределом 3 тонны на ось. Статус плеча отвечает.</dd>
+
+      <dt>Чем заявка на кран в область отличается от заявки в черте Петербурга?</dt>
+      <dd>Тремя вещами, которых в городе просто нет. Первое — маршрут идёт по региональным дорогам, у которых есть сезонный приказ по осевым нагрузкам. Второе — площадка чаще без твёрдого покрытия, и от этого зависит тип хода. Третье — на части объектов действует внешний режим допуска: терминал порта, пограничная зона, особо охраняемая природная территория. В городе заявка упирается в парковку и согласование перекрытия, здесь — в дорогу, грунт и пропуск.</dd>
+    </dl>
+
+    
+    
+    
+
+<aside class="sources" aria-label="Источники">
+  <p class="sources__head">Источники · проверено 12.08.2026</p>
+  <ul class="sources__list">
+    
+      
+        <li><a href="https://kdh.lenobl.ru/ru/news/92107/" target="_blank" rel="noopener">Комитет по дорожному хозяйству Ленинградской области — приказ № 5/26 от 10 марта 2026 года, временные ограничения движения 2026 года (весенний и летний периоды)</a></li>
+      
+    
+      
+        
+        
+        <li><a href="https://ru.ruwiki.ru/wiki/%D0%90-180_%C2%AB%D0%9D%D0%B0%D1%80%D0%B2%D0%B0%C2%BB" target="_blank" rel="noopener">A-180 «Нарва» — федеральная дорога Санкт-Петербург — Ивангород, 148 км, часть маршрута E 20</a></li>
+        
+      
+    
+      
+        
+        
+        <li><a href="https://47news.ru/articles/129125/" target="_blank" rel="noopener">Росавтодор — 52-километровый подъезд к морскому торговому порту «Усть-Луга» от трассы A-180 «Нарва» (участок км 16–40 введён в 2014 году, км 0–16 — в 2015-м)</a></li>
+        
+      
+    
+      
+        
+        
+        <li><a href="https://cyclowiki.org/wiki/%D0%9F%D1%81%D0%BA%D0%BE%D0%B2_%E2%80%94_%D0%9A%D1%80%D0%B0%D0%BA%D0%BE%D0%BB%D1%8C%D0%B5" target="_blank" rel="noopener">дорога «Псков — Краколье»: учётный номер 41К-005 в Ленинградской области (58К-096 — в Псковской), асфальтобетон</a></li>
+        
+      
+    
+  </ul>
+  
+  <p class="sources__note">Сроки и перечень участков утверждаются заново каждый сезон — маршрут сверяем на дату выезда.</p>
+</aside>
+
+
+  </section>
+</main>
+</div>
+  <footer class="footer wrap">
+    <span>© 2026 КРАН-ЛО · kran-lo.example</span>
+    
+    <nav class="footer__legal" aria-label="Контакты и правовые документы">
+      <a href="/kontakty/">Контакты</a>
+      <a href="/politika-obrabotki-personalnyh-dannyh/">Политика обработки ПД</a>
+      <a href="/soglasie-na-obrabotku-personalnyh-dannyh/">Согласие на обработку ПД</a>
+    </nav>
+    <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+  </footer>
+  
+  <div class="mcta" role="region" aria-label="Быстрая связь">
+    <a class="mcta__btn mcta__btn--order" href="/#order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V6l9 4M4 6h5M13 10l7 2.2M20 12.2V20M9 20l1.5-6"/></svg>
+      Заказать кран
+    </a>
+    <a class="mcta__btn mcta__btn--call" href="tel:+79647243176">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 12l5 2v4a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
+      Позвонить
+    </a>
+  </div>
+  <script src="/js/calculator.js" defer></script>
+  
+  <script src="/js/season-logic.js" defer></script>
+  <script src="/js/status.js" defer></script>
+  <script src="/js/enhance.js" defer></script>
+  
+  <script src="/js/tilt.js" defer></script>
+  
+  <script src="/js/lead-form.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Автокран у вахтового городка КПЭГ — разбор типовой задачи</title>
+  <meta name="description" content="Иллюстративный сценарий: посменный автокран у стройки КПЭГ в Кингисеппском районе. Почему это не отчёт о заказе и чем отличается от портовой логистики." />
+  <link rel="canonical" href="https://kran-lo.example/keysy/montazh-vahtovogo-gorodka-kpeg/" />
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="alternate icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#1A1A1A" />
+  
+  <link rel="preload" href="/fonts/cuprum-cyrillic-var-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/scada-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Автокран у вахтового городка КПЭГ — разбор типовой задачи" />
+  <meta property="og:description" content="Иллюстративный сценарий: посменный автокран у стройки КПЭГ в Кингисеппском районе. Почему это не отчёт о заказе и чем отличается от портовой логистики." />
+  <meta property="og:url" content="https://kran-lo.example/keysy/montazh-vahtovogo-gorodka-kpeg/" />
+  <meta property="og:site_name" content="КРАН-ЛО" />
+  <meta property="og:locale" content="ru_RU" />
+  
+  <meta property="og:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="КРАН-ЛО, Ленинградская область: сначала дата и дорога, потом модель" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://kran-lo.example/#organization","name":"КРАН-ЛО","telephone":"+79647243176","email":"info@kran-lo.example","url":"https://kran-lo.example","priceRange":"₽₽","address":{"@type":"PostalAddress","addressRegion":"Ленинградская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":59.6636,"longitude":28.3372},"areaServed":"Ленинградская область","openingHours":"Mo-Su 00:00-24:00"}</script>
+  
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://kran-lo.example/"},{"@type":"ListItem","position":2,"name":"Примеры задач","item":"https://kran-lo.example/keysy/"},{"@type":"ListItem","position":3,"name":"Вахтовый городок у КПЭГ","item":"https://kran-lo.example/keysy/montazh-vahtovogo-gorodka-kpeg/"}]}</script>
+</head>
+<body>
+  <!-- .reveal class is written statically in markup and hidden via CSS until JS adds .is-visible.
+       Without working JS that never happens — this noscript override keeps the content visible
+       for no-JS users and non-JS-executing crawlers (found in a post-Волна-10 a11y audit). -->
+  <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+  <header class="nav">
+    <div class="nav__row wrap">
+      <a class="brand" href="/">КРАН<span>-ЛО</span></a>
+      <nav class="nav__links" aria-label="Основная навигация">
+        <a href="/kalendar/">Календарь</a>
+        <a href="/marshruty/">Маршруты</a>
+        <a href="/#uslugi">Что подаём</a>
+        <a href="/park/">Парк техники</a>
+        <a href="/keysy/">Примеры задач</a>
+        <a href="/documents/">Допуски</a>
+        <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+      </nav>
+      <a class="nav__order-btn" href="/#order">Заказать кран</a>
+      
+      <details class="nav__mobile" data-nav-mobile>
+        <summary class="nav__mobile-btn">
+          <span class="nav__mobile-bars" aria-hidden="true"></span>Меню
+        </summary>
+        <nav class="nav__mobile-panel" aria-label="Мобильная навигация">
+          <a href="/kalendar/">Календарь ограничений</a>
+          <a href="/marshruty/">Маршруты подачи</a>
+          <a href="/#uslugi">Что подаём</a>
+          <a href="/park/">Парк техники</a>
+          <a href="/keysy/">Примеры задач</a>
+          <a href="/documents/">Допуски</a>
+          <a href="/blog/">Блог</a>
+          <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <div id="main-content" tabindex="-1"><main>
+  <nav class="crumbs wrap" aria-label="Хлебные крошки">
+    <a href="/">Главная</a><span>/</span><a href="/keysy/">Примеры задач</a><span>/</span><span>Вахтовый городок у КПЭГ</span>
+  </nav>
+
+  <section class="section wrap" style="padding-top:8px">
+    <div class="section-head">
+      <span class="eyebrow">Иллюстративный сценарий</span>
+      <h1>Автокран рядом с мегастройкой: вахтовый городок, а не сам комплекс</h1>
+    
+<p class="rates-line">
+  <span class="rates-line__item">Автокран <b>от 4 000 ₽/час</b></span>
+  <span class="rates-line__item">Гусеничный <b>от 6 000 ₽/час</b></span>
+  <span class="rates-line__note">Смена 8 часов — минимальный заказ. <a href="/#calculator-block">Посчитать смену →</a></span>
+</p>
+
+      <p>Региональный подрядчик рядом с мегастройкой работает не на самом технологическом объекте, а на кольце вспомогательных площадок вокруг него: у стройки КПЭГ в Усть-Лужском сельском поселении в феврале 2022 года было занято свыше 3,6 тыс. рабочих и около 800 единиц техники, под их расселение проектировали 6 временных вахтовых городков и 5 площадок-стоянок для большегрузов.</p>
+    <p>Дорога туда идёт по тому же федеральному подъезду от A-180, что и к порту, поэтому сезонный лимит по осям на неё не действует — но на съезде к конкретной площадке, если технологическая дорога ещё не построена, включаются обычные 3 тонны на ось периода просушки. Ниже — разбор типовой задачи вокруг стройки федерального масштаба, а не отчёт о выполненном заказе.</p>
+    </div>
+  </section>
+
+  <section class="section wrap prose" style="padding-top:0">
+    <p><b>Задача.</b> Подрядчик, который собирает вспомогательную инфраструктуру рядом со стройкой Комплекса по переработке этансодержащего газа (КПЭГ) в Усть-Лужском сельском поселении, заказывает посменный автокран для монтажа очередного корпуса вахтового городка — модульного здания для расселения рабочих, а не для работ на самом технологическом объекте.</p>
+
+    <p><b>Честная оговорка, прежде чем цифры.</b> Мы не работали на этой площадке и не выдаём себя за подрядчика КПЭГ: это проект федерального масштаба, который «Газпром» и «РусГазДобыча» ведут через генеральных подрядчиков вроде Limak Construction, и технологическую часть туда монтируют не региональные компании. Разбор ниже — иллюстрация того, какой спрос на технику создаёт вокруг себя такая стройка, а не отчёт о выполненной работе.</p>
+
+    <p><b>Масштаб, который один генподрядчик не закрывает своими силами.</b> В феврале 2022 года, когда стройка только набирала темп, на площадке уже было занято свыше 3,6 тыс. рабочих и около 800 единиц техники; по другой оценке того же месяца — свыше 4 тыс. человек и порядка тысячи единиц техники, а для их расселения проектировали шесть временных вахтовых городков и пять площадок-стоянок для большегрузов, ещё пять на тот год только планировались.</p>
+    <p>К концу 2025 года готовность комплекса выросла до 70% (для сравнения — 46% на конец 2024-го), а по разным оценкам 2022 года на пике строительства ожидалось от 25 до 70 тысяч специалистов одновременно.</p>
+    <p>Такое количество параллельных вспомогательных объектов физически не закрывается одним контрактом — вокруг мегастройки годами держится спрос на тех, кто ставит модульные корпуса, столовые и стоянки, а не варит технологические трубопроводы.</p>
+
+    <p><b>Почему здесь автокран, а не гусеничный ход.</b> На причале терминала и в карьере Кикерино кран работает там, где готового покрытия не было и не будет, — обе площадки описаны в разборах <a href="/keysy/razgruzka-v-portu-ust-luga/">по порту</a> и <a href="/keysy/rabota-v-karere-kikerino/">по карьеру</a>, и в обоих случаях едет гусеничный кран. У вспомогательной площадки другая логика: под неё, как под любой новый объект, сначала отсыпают и трамбуют временную дорогу и основание — иначе на неё не завезти сами модули.</p>
+    <p>К моменту монтажа там уже уплотнённое, пусть не асфальтовое, но достаточно твёрдое основание, и автокран на выносных опорах работает так же, как на обычной жилой стройке Гатчинского направления (см. <a href="/marshruty/asfaltobeton-gatchina-lomonosov/">паспорт маршрута</a>) — только поднимает не бетонные плиты, а жилые и бытовые модули.</p>
+
+    <p><b>Что реально ограничивает подачу здесь.</b> Не пропускной режим действующего терминала — это отдельная и уже разобранная история, а собственный контроль допуска подрядчика: технику пускают по спискам генподрядчика, а не по правилам порта.</p>
+    <p>Дорога в Усть-Лужское сельское поселение идёт по тому же федеральному подъезду от A-180, что и к самому порту (см. <a href="/marshruty/ust-luga-port/">паспорт плеча</a>), поэтому сезонный лимит по осям на этот участок не действует; но на съезде к конкретной вспомогательной площадке, если подрядчик ещё не построил собственную технологическую дорогу, действуют общие правила <a href="/marshruty/gruntovki-i-sezdy/">грунтовых съездов</a> — 3 тонны на ось в период просушки.</p>
+
+    <p><b>Что считаем по смене, а не по городку.</b> Задача считается как обычная посменная работа: применим тот же <a href="/uslugi/avtokran-dlya-stroyki/">лимит по осям и калькулятор смен</a>, что и на любой стройке области — заказчик называет число модулей и высоту подъёма, мы даём смену, а не привязку к сроку сдачи всего городка.</p>
+    <p>Это проще и портовой заявки (где в пропуске фигурируют сразу две единицы техники), и заявки в карьер (где маршрут согласуют с непубличным регламентом предприятия) — именно потому, что вспомогательная площадка не относится ни к порту, ни к заказнику, ни к действующему предприятию.</p>
+
+    <p><b>Итог сценария.</b> Мегастройка федерального масштаба создаёт спрос не там, где кажется на первый взгляд: не в порту (там своя логистика уже разобрана) и не на самом технологическом объекте (туда региональную технику не пускают), а на кольце вспомогательных площадок вокруг неё. Именно там посменный автокран работает по тем же правилам, что и на обычной стройке, — просто повод для заявки редко встречается где-то ещё в области.</p>
+
+    
+    
+    
+    
+
+<aside class="sources" aria-label="Источники">
+  <p class="sources__head">Источники · проверено 12.08.2026</p>
+  <ul class="sources__list">
+    
+      
+        <li><a href="https://kdh.lenobl.ru/ru/news/92107/" target="_blank" rel="noopener">Комитет по дорожному хозяйству Ленинградской области — приказ № 5/26 от 10 марта 2026 года, временные ограничения движения 2026 года (весенний и летний периоды)</a></li>
+      
+    
+      
+        
+        
+        <li><a href="https://www.dp.ru/a/2022/02/16/Krupnejshaja_v_Evrope" target="_blank" rel="noopener">«Деловой Петербург», 21.02.2022 — стройка КПЭГ в Усть-Лужском сельском поселении: свыше 3,6 тыс. рабочих и около 800 ед. техники, оценка пиковой численности 25–70 тыс. специалистов</a></li>
+        
+      
+    
+      
+        
+        
+        <li><a href="https://paluba.media/news/206712" target="_blank" rel="noopener">Медиапалуба, 26.12.2025 — готовность газоперерабатывающего комплекса КПЭГ 70% (для сравнения: 46% на конец 2024 года), по заявлению главы «Газпрома»</a></li>
+        
+      
+    
+  </ul>
+  
+  <p class="sources__more">Подробный разбор и остальные источники по теме —
+    <a href="/marshruty/ust-luga-port/">паспорте плеча к порту</a>, <a href="/documents/">допуске на объект</a>.
+  </p>
+  
+  <p class="sources__note">Разбор иллюстративный: это логика решения типовой задачи вокруг стройки федерального масштаба, а не отчёт о выполненном заказе и не связь с самим КПЭГ.</p>
+</aside>
+
+
+  </section>
+
+  <section class="section wrap" style="padding-top:0">
+    <a class="btn" href="/#order">Описать вспомогательный объект и получить расчёт →</a>
+  </section>
+</main>
+</div>
+  <footer class="footer wrap">
+    <span>© 2026 КРАН-ЛО · kran-lo.example</span>
+    
+    <nav class="footer__legal" aria-label="Контакты и правовые документы">
+      <a href="/kontakty/">Контакты</a>
+      <a href="/politika-obrabotki-personalnyh-dannyh/">Политика обработки ПД</a>
+      <a href="/soglasie-na-obrabotku-personalnyh-dannyh/">Согласие на обработку ПД</a>
+    </nav>
+    <a href="tel:+79647243176">+7 (964) 724-31-76</a>
+  </footer>
+  
+  <div class="mcta" role="region" aria-label="Быстрая связь">
+    <a class="mcta__btn mcta__btn--order" href="/#order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V6l9 4M4 6h5M13 10l7 2.2M20 12.2V20M9 20l1.5-6"/></svg>
+      Заказать кран
+    </a>
+    <a class="mcta__btn mcta__btn--call" href="tel:+79647243176">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 12l5 2v4a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 5.2 2 2 0 0 1 5 3z"/></svg>
+      Позвонить
+    </a>
+  </div>
+  <script src="/js/calculator.js" defer></script>
+  
+  <script src="/js/season-logic.js" defer></script>
+  <script src="/js/status.js" defer></script>
+  <script src="/js/enhance.js" defer></script>
+  
+  <script src="/js/tilt.js" defer></script>
+  
+  <script src="/js/lead-form.js" defer></script>
+</body>
+</html>
