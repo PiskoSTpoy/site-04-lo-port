@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ title }}</title>
   <meta name="description" content="{{ description }}" />
-  <link rel="canonical" href="https://kran-lo.example{{ path }}" />
+  <link rel="canonical" href="https://kran-lo.ru{{ path }}" />
   {# Фавиконки объявлены явно: без <link rel="icon"> браузер сам дёргает
      /favicon.ico и пишет 404 в консоль — это и был единственный источник
      ошибки консоли на всех 40 страницах. SVG для современных браузеров,
@@ -28,7 +28,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="{{ title }}" />
   <meta property="og:description" content="{{ description }}" />
-  <meta property="og:url" content="https://kran-lo.example{{ path }}" />
+  <meta property="og:url" content="https://kran-lo.ru{{ path }}" />
   <meta property="og:site_name" content="КРАН-ЛО" />
   <meta property="og:locale" content="ru_RU" />
   {# twitter:card=summary_large_image объявляли и раньше, но og:image не было —
@@ -36,12 +36,12 @@
      и намеренно без цифр: тираж под каждую страницу означал бы либо шаблонную
      подстановку заголовка, либо цифры, которые устареют раньше картинки.
      Собирается scripts/make-og.mjs из живой страницы, чтобы шрифт был настоящий. #}
-  <meta property="og:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <meta property="og:image" content="https://kran-lo.ru/images/og/og-default.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="КРАН-ЛО, Ленинградская область: сначала дата и дорога, потом модель" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://kran-lo.example/images/og/og-default.png" />
+  <meta name="twitter:image" content="https://kran-lo.ru/images/og/og-default.png" />
   <link rel="stylesheet" href="/css/main.css" />
   {# Один узел организации на страницу, а не два. Раньше здесь стояли LocalBusiness
      с @id «#business» и отдельный Organization с @id «#organization» — для парсера
@@ -49,12 +49,24 @@
      услуг (provider у Service), второе — издателем статей (publisher у Article).
      LocalBusiness сам является подтипом Organization, поэтому узел один, и ссылки
      по @id «#organization» из Service и Article ведут теперь в него же. #}
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://kran-lo.example/#organization","name":"КРАН-ЛО","telephone":"+79647243176","email":"info@kran-lo.example","url":"https://kran-lo.example","priceRange":"₽₽","address":{"@type":"PostalAddress","addressRegion":"Ленинградская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":59.6636,"longitude":28.3372},"areaServed":"Ленинградская область","openingHours":"Mo-Su 00:00-24:00"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://kran-lo.ru/#organization","name":"КРАН-ЛО","telephone":"+79647243176","email":"info@kran-lo.ru","url":"https://kran-lo.ru","priceRange":"₽₽","address":{"@type":"PostalAddress","addressRegion":"Ленинградская область","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":59.6636,"longitude":28.3372},"areaServed":"Ленинградская область","openingHours":"Mo-Su 00:00-24:00"}</script>
   {# WebSite описывает САЙТ ЦЕЛИКОМ, поэтому размечается только на главной.
      На всех 42 страницах он повторял одно и то же утверждение 42 раза —
      ни одного дополнительного смысла, зато 42 кандидата на «главную». #}
-  {% if path == "/" %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://kran-lo.example/#website","name":"КРАН-ЛО","url":"https://kran-lo.example","inLanguage":"ru-RU","publisher":{"@id":"https://kran-lo.example/#organization"}}</script>{% endif %}
+  {% if path == "/" %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://kran-lo.ru/#website","name":"КРАН-ЛО","url":"https://kran-lo.ru","inLanguage":"ru-RU","publisher":{"@id":"https://kran-lo.ru/#organization"}}</script>{% endif %}
   {% if ldExtra %}{% for block in ldExtra %}<script type="application/ld+json">{{ block | safe }}</script>{% endfor %}{% endif %}
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+  (function(m,e,t,r,i,k,a){
+  m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112123760', 'ym');
+  ym(112123760, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/112123760" width="1" height="1" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
 </head>
 <body>
   <!-- .reveal class is written statically in markup and hidden via CSS until JS adds .is-visible.
@@ -97,7 +109,7 @@
   </header>
   <div id="main-content" tabindex="-1">{{ content | safe }}</div>
   <footer class="footer wrap">
-    <span>© 2026 КРАН-ЛО · kran-lo.example</span>
+    <span>© 2026 КРАН-ЛО · kran-lo.ru</span>
     {# Обе правовые ссылки — в подвале, то есть на КАЖДОЙ странице сайта, а не
        только рядом с формой: политика должна быть доступна отовсюду, а согласие
        с 01.09.2025 живёт отдельным документом и ссылкой на него же. #}

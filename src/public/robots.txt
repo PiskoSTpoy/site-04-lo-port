@@ -31,4 +31,4 @@ Allow: /
 User-agent: OAI-SearchBot
 Allow: /
 
-Sitemap: https://kran-lo.example/sitemap.xml
+Sitemap: https://kran-lo.ru/sitemap.xml

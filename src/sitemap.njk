@@ -19,7 +19,7 @@ eleventyExcludeFromCollections: true
 {%- if p and p != "/404.html" %}
 {%- set meta = sitemapMeta.BY_PATH[p] or sitemapMeta.DEFAULT %}
 {%- set lm = item.inputPath | sourceMtime %}
-  <url><loc>https://kran-lo.example{{ p }}</loc>{% if lm %}<lastmod>{{ lm }}</lastmod>{% endif %}<changefreq>{{ meta.changefreq }}</changefreq><priority>{{ meta.priority }}</priority></url>
+  <url><loc>https://kran-lo.ru{{ p }}</loc>{% if lm %}<lastmod>{{ lm }}</lastmod>{% endif %}<changefreq>{{ meta.changefreq }}</changefreq><priority>{{ meta.priority }}</priority></url>
 {%- endif %}
 {%- endfor %}
 </urlset>
