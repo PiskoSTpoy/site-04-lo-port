@@ -42,8 +42,9 @@
   var LERP = 0.08; // демпфирование
 
   var reduceMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var targetX = 0, targetY = 0, curX = 0, curY = 0, scrollShift = 0;
+  var targetX = 0, targetY = 0, curX = 0, curY = 0, scrollShift = 0, prevScrollShift = 0;
   var raf = null;
+  var SETTLE_EPS = 0.02; // px — ниже этого разница уже не видна на экране
 
   function onPointerMove(e) {
     var rect = wrap.getBoundingClientRect();
@@ -52,6 +53,7 @@
     var relY = (e.clientY - rect.top) / rect.height - 0.5;
     targetX = Math.max(-0.5, Math.min(0.5, relX)) * (MAX_SHIFT_X * 2);
     targetY = Math.max(-0.5, Math.min(0.5, relY)) * (MAX_SHIFT_Y * 2);
+    wake();
   }
 
   function onScroll() {
@@ -60,6 +62,19 @@
     // progress: 0 когда блок у нижнего края экрана, 1 когда у верхнего
     var progress = 1 - Math.max(0, Math.min(1, rect.top / vh));
     scrollShift = (progress - 0.5) * SCROLL_SHIFT;
+    wake();
+  }
+
+  // Core Web Vitals, 07.09.2026: раньше tick() планировал сам себя безусловно —
+  // rAF-цикл крутился бесконечно (каждые ~16мс, весь срок жизни страницы), даже
+  // когда курсор и скролл давно замерли и transform не менялся ни на пиксель.
+  // Лишняя работа главного потока на throttled CPU (TBT сети). Теперь цикл сам
+  // останавливается, как только curX/curY догнали цель И скролл не двигался с
+  // прошлого кадра, и просыпается заново из onPointerMove/onScroll — визуально
+  // ничего не меняется (та же LERP-анимация, тот же результат).
+  function wake() {
+    if (raf) return;
+    raf = requestAnimationFrame(tick);
   }
 
   function tick() {
@@ -67,6 +82,16 @@
     curY += (targetY - curY) * LERP;
     var totalY = curY + scrollShift;
     svg.style.transform = 'translate3d(' + curX.toFixed(2) + 'px,' + totalY.toFixed(2) + 'px,0)';
+
+    var settled = Math.abs(targetX - curX) < SETTLE_EPS &&
+      Math.abs(targetY - curY) < SETTLE_EPS &&
+      scrollShift === prevScrollShift;
+    prevScrollShift = scrollShift;
+
+    if (settled) {
+      raf = null; // цикл спит, пока onPointerMove/onScroll не вызовут wake()
+      return;
+    }
     raf = requestAnimationFrame(tick);
   }
 
