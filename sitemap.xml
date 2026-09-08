@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://kran-lo.ru/</loc><lastmod>2026-08-26T13:01:44+00:00</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://kran-lo.ru/blog/</loc><lastmod>2026-09-07T16:50:45+00:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://kran-lo.ru/blog/otvetstvennost-za-narushenie-prosushki/</loc><lastmod>2026-08-31T21:49:43+00:00</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kran-lo.ru/blog/prosushka-dorog-ogranicheniya/</loc><lastmod>2026-08-31T21:49:43+00:00</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://kran-lo.ru/blog/terminaly-porta-ust-luga/</loc><lastmod>2026-08-31T21:49:43+00:00</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -48,4 +47,6 @@
   <url><loc>https://kran-lo.ru/blog/propusk-v-port-primorsk/</loc><lastmod>2026-09-07T16:50:45+00:00</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://kran-lo.ru/blog/sosnovyy-bor-zato-laes-2/</loc><lastmod>2026-09-07T16:50:45+00:00</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://kran-lo.ru/blog/vysotskiy-zernovoy-terminal/</loc><lastmod>2026-09-07T16:50:45+00:00</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://kran-lo.ru/blog/</loc><lastmod>2026-09-08T00:20:52+00:00</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://kran-lo.ru/blog/tihvin-vagonostroitelny-zavod/</loc><lastmod>2026-09-08T00:22:22+00:00</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
