@@ -38,7 +38,15 @@
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://kran-lo.ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://kran-lo.ru/blog/"},{"@type":"ListItem","position":3,"name":"Порт зимой","item":"https://kran-lo.ru/blog/navigaciya-ust-luga-zimoy/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Порт Усть-Луга зимой: навигация без сезонной паузы у крана","description":"Лужская губа держит навигацию без ледоколов до 326 дней в году, но зима 2025/2026 показала: лёд всё равно может сдвинуть график погрузки.","author":{"@id":"https://kran-lo.ru/#organization"},"publisher":{"@id":"https://kran-lo.ru/#organization"},"mainEntityOfPage":"https://kran-lo.ru/blog/navigaciya-ust-luga-zimoy/","inLanguage":"ru-RU"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Порт Усть-Луга останавливается на зиму, как дороги на просушку?","acceptedAnswer":{"@type":"Answer","text":"Нет. Весенний дорожный приказ — заранее объявленная календарная дата. У порта своего сезонного приказа нет: навигация в Лужской губе без ледокольной проводки держится до 326 дней в году, а в ледовый период суда проводят ледоколы, а не закрывают акваторию."}},{"@type":"Question","name":"Значит зимой кран в порт можно подавать в любой день без ограничений?","acceptedAnswer":{"@type":"Answer","text":"Дорожного ограничения — да, на федеральном подъезде к порту сезонный приказ не действует ни весной, ни зимой. Но расписание судозаходов и погрузки у терминала в тяжёлую по льду зиму может сдвигаться, и дату подачи техники мы сверяем с терминалом отдельно."}},{"@type":"Question","name":"Насколько холодной была зима 2025/2026 года у Усть-Луги?","acceptedAnswer":{"@type":"Answer","text":"Лёд в акватории порта Усть-Луга достигал 30 см, ледовая обстановка на подходах оказалась тяжелее прогноза, а лёд в Финском заливе впервые за 15 лет дошёл до долготы Таллина при морозах до −25 °C."}}]}</script>
   <!-- Yandex.Metrika counter -->
+  <!-- 08.09.2026 — отложенная загрузка до window.load (фоллбэк 4с), тот же паттерн, что
+       и на остальных сайтах сети (см. память kran-network-core-web-vitals): webvisor:true —
+       тяжёлая опция, tag.js ощутимо грузит главный поток на throttled CPU, а к моменту
+       load LCP/FCP уже случились. Флаг __ymBooted — от двойного срабатывания. ym() в этом
+       сайте больше нигде не вызывается (grep по src/). -->
   <script type="text/javascript">
+  function __ymBoot(){
+  if (window.__ymBooted) return;
+  window.__ymBooted = true;
   (function(m,e,t,r,i,k,a){
   m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
   m[i].l=1*new Date();
@@ -46,6 +54,8 @@
   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112123760', 'ym');
   ym(112123760, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  }
+  if (document.readyState === 'complete') { __ymBoot(); } else { window.addEventListener('load', __ymBoot); setTimeout(__ymBoot, 4000); }
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/112123760" width="1" height="1" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->

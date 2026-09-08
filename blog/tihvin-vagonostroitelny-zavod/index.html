@@ -38,7 +38,15 @@
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://kran-lo.ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://kran-lo.ru/blog/"},{"@type":"ListItem","position":3,"name":"Тихвин","item":"https://kran-lo.ru/blog/tihvin-vagonostroitelny-zavod/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Кран в Тихвине: вагоностроительный завод и трасса А-114","description":"Тихвин — первое восточное направление сайта: вагоностроительный завод ОВК и федеральная трасса А-114, свободная от сезонного приказа.","author":{"@id":"https://kran-lo.ru/#organization"},"publisher":{"@id":"https://kran-lo.ru/#organization"},"mainEntityOfPage":"https://kran-lo.ru/blog/tihvin-vagonostroitelny-zavod/","inLanguage":"ru-RU"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Ваш кран поднимает вагоны или оборудование прямо в цехах завода?","acceptedAnswer":{"@type":"Answer","text":"Нет. Внутри цехов детали и секции вагона перемещают собственные мостовые краны предприятия, смонтированные стационарно под технологический процесс. Наша техника работает на периферии площадки — вспомогательные здания, инженерные сети, складские и подсобные конструкции."}},{"@type":"Question","name":"Почему на дорогу до Тихвина не действует весенний приказ о просушке?","acceptedAnswer":{"@type":"Answer","text":"Маршрут от Санкт-Петербурга через Новую Ладогу до Тихвина целиком идёт по дорогам федерального значения (Р-21 «Кола» и А-114), а региональный сезонный приказ распространяется только на региональные, межмуниципальные и местные дороги области — тот же принцип, что и на федеральных Р-23, А-180 и А-181."}},{"@type":"Question","name":"Почему Тихвин появился на сайте только сейчас?","acceptedAnswer":{"@type":"Answer","text":"Предыдущие разборы описывали юго-запад, северо-запад и один объект на востоке — Пороги под Волховом. Тихвин на 80 с лишним километров восточнее, на отдельной федеральной трассе, которая ещё не упоминалась ни в одном материале сайта."}}]}</script>
   <!-- Yandex.Metrika counter -->
+  <!-- 08.09.2026 — отложенная загрузка до window.load (фоллбэк 4с), тот же паттерн, что
+       и на остальных сайтах сети (см. память kran-network-core-web-vitals): webvisor:true —
+       тяжёлая опция, tag.js ощутимо грузит главный поток на throttled CPU, а к моменту
+       load LCP/FCP уже случились. Флаг __ymBooted — от двойного срабатывания. ym() в этом
+       сайте больше нигде не вызывается (grep по src/). -->
   <script type="text/javascript">
+  function __ymBoot(){
+  if (window.__ymBooted) return;
+  window.__ymBooted = true;
   (function(m,e,t,r,i,k,a){
   m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
   m[i].l=1*new Date();
@@ -46,6 +54,8 @@
   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112123760', 'ym');
   ym(112123760, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  }
+  if (document.readyState === 'complete') { __ymBoot(); } else { window.addEventListener('load', __ymBoot); setTimeout(__ymBoot, 4000); }
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/112123760" width="1" height="1" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->

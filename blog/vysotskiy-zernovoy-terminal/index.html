@@ -38,7 +38,15 @@
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Главная","item":"https://kran-lo.ru/"},{"@type":"ListItem","position":2,"name":"Блог","item":"https://kran-lo.ru/blog/"},{"@type":"ListItem","position":3,"name":"Терминал в Высоцке","item":"https://kran-lo.ru/blog/vysotskiy-zernovoy-terminal/"}]}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Высоцкий зерновой терминал: вторая очередь и подача крана на площадку","description":"Морской терминал Высоцкого зернового терминала работает с 2023 года, вторая очередь — маслоэкстракционный завод — на этапе стройки. Разбираем, что уже работает, что ещё строится, и что это значит для допуска крана.","author":{"@id":"https://kran-lo.ru/#organization"},"publisher":{"@id":"https://kran-lo.ru/#organization"},"mainEntityOfPage":"https://kran-lo.ru/blog/vysotskiy-zernovoy-terminal/","inLanguage":"ru-RU"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Высоцкий зерновой терминал — это тот же объект, что угольный терминал «Порт Высоцкий» из разбора Выборгского направления?","acceptedAnswer":{"@type":"Answer","text":"Да. ООО «Порт Высоцкий» ещё в 2020 году решило переориентировать бывший угольный терминал на зерно, а 8 сентября 2023 года новый терминал открыли официально: инвестиции 5,85 млрд рублей, мощность 4 млн тонн зерна в год. Угля как основного груза площадки на сегодня нет."}},{"@type":"Question","name":"Что сейчас строится на этой же площадке — вторая очередь?","acceptedAnswer":{"@type":"Answer","text":"Маслоэкстракционный завод (МЭЗ) — вторая часть проекта «Высоцкий зерновой терминал», инвестиции более 6 млрд рублей. Общественные обсуждения прошли 15 марта — 14 апреля 2024 года. Морской терминал и завод — единый проект с общей инфраструктурой."}},{"@type":"Question","name":"Раз это площадка в Высоцке, нужен ли крану ещё и пропуск в погранзону, как для других терминалов направления?","acceptedAnswer":{"@type":"Answer","text":"Нужен. Пропуск на территорию предприятия и пропуск в пограничную зону Выборгского района (приказ ФСБ России от 02.06.2006 № 239) — два независимых допуска, и для стройплощадки МЭЗ это правило действует так же, как для готового терминала."}}]}</script>
   <!-- Yandex.Metrika counter -->
+  <!-- 08.09.2026 — отложенная загрузка до window.load (фоллбэк 4с), тот же паттерн, что
+       и на остальных сайтах сети (см. память kran-network-core-web-vitals): webvisor:true —
+       тяжёлая опция, tag.js ощутимо грузит главный поток на throttled CPU, а к моменту
+       load LCP/FCP уже случились. Флаг __ymBooted — от двойного срабатывания. ym() в этом
+       сайте больше нигде не вызывается (grep по src/). -->
   <script type="text/javascript">
+  function __ymBoot(){
+  if (window.__ymBooted) return;
+  window.__ymBooted = true;
   (function(m,e,t,r,i,k,a){
   m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
   m[i].l=1*new Date();
@@ -46,6 +54,8 @@
   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112123760', 'ym');
   ym(112123760, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  }
+  if (document.readyState === 'complete') { __ymBoot(); } else { window.addEventListener('load', __ymBoot); setTimeout(__ymBoot, 4000); }
   </script>
   <noscript><div><img src="https://mc.yandex.ru/watch/112123760" width="1" height="1" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
