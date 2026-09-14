@@ -94,6 +94,12 @@
         <a href="/park/"{% if path == "/park/" %} aria-current="page"{% endif %}>Парк техники</a>
         <a href="/keysy/"{% if path == "/keysy/" %} aria-current="page"{% endif %}>Примеры задач</a>
         <a href="/documents/"{% if path == "/documents/" %} aria-current="page"{% endif %}>Допуски</a>
+        {# 14.09.2026: в десктопной навигации отсутствовала ссылка на /blog/ —
+           она была только в мобильном меню ниже. Раздел блога (15 статей)
+           получал долю входящих ссылок только через хлебные крошки и
+           блок «Читайте также» внутри своих же статей, ни разу — из
+           единственной сквозной панели сайта. См. память kran-network-v3. #}
+        <a href="/blog/"{% if path == "/blog/" %} aria-current="page"{% endif %}>Блог</a>
         <a href="tel:+79647243176">+7 (964) 724-31-76</a>
       </nav>
       <a class="nav__order-btn" href="/#order">Заказать кран</a>

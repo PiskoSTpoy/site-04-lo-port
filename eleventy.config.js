@@ -77,6 +77,27 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("excludePath", (arr, path) =>
     Array.isArray(arr) ? arr.filter((p) => p && p.data && p.data.path !== path) : []
   );
+  // relatedByPath: замена excludePath+head(3) для блока «Читайте также».
+  // Прежняя пара фильтров всегда возвращала первые 3 поста по алфавиту
+  // заголовка — 11 из 15 статей блога не получали НИ ОДНОЙ внутренней
+  // ссылки из этого блока (проверено 14.09.2026: см. память
+  // kran-network-v3). relatedByPath берёт следующие n постов ПОСЛЕ
+  // текущего в том же отсортированном массиве, с переходом по кругу —
+  // так у каждой статьи коллекции появляются свои 3 «соседа», и любая
+  // статья получает свои 3 входящие ссылки от 3 статей перед ней.
+  eleventyConfig.addFilter("relatedByPath", (arr, path, n) => {
+    if (!Array.isArray(arr) || !arr.length) return [];
+    const len = arr.length;
+    const count = Math.min(n || 3, len - 1);
+    if (count <= 0) return [];
+    const idx = arr.findIndex((p) => p && p.data && p.data.path === path);
+    const start = idx === -1 ? 0 : idx;
+    const out = [];
+    for (let i = 1; i <= count; i++) {
+      out.push(arr[(start + i) % len]);
+    }
+    return out;
+  });
 
   // Коллекция статей блога — все реальные index.njk из src/blog/<slug>/.
   // Индекс блога (src/blog/index.njk) исключён по проверке data.path.

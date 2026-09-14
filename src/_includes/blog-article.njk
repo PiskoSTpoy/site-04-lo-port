@@ -10,7 +10,12 @@ layout: layout.njk
 {% set _h2s = content | extractH2s %}
 {% set _bodyWithIds = content | injectH2Ids %}
 {% set _hasToc = _h2s.length >= 3 %}
-{% set _relatedTop = collections.blogPosts | excludePath(path) | head(3) %}
+{# Волна 14.09.2026: excludePath+head(3) всегда возвращали одни и те же
+   3 поста (первые по алфавиту заголовка) — 11 из 15 статей блога не
+   получали ни одной ссылки из этого блока. relatedByPath (eleventy.config.js)
+   берёт 3 следующих поста по кругу от текущего — у каждой статьи свои
+   «соседи», и каждая получает свои 3 входящие ссылки. #}
+{% set _relatedTop = collections.blogPosts | relatedByPath(path, 3) %}
 
 <div class="reading-progress" aria-hidden="true"><span class="reading-progress__bar"></span></div>
 
