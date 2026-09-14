@@ -240,7 +240,12 @@ p { margin: 0; }
 }
 /* тап-таргет ссылки в футере был 21.5px по высоте (WCAG 2.5.8 требует 24) */
 .footer a { display: inline-block; padding-block: 6px; }
-@media (max-width: 760px) { .nav__links { display: none; } }
+/* 14.09.2026: добавлена 7-я ссылка «Блог» в десктопную навигацию (см. layout.njk) —
+   .nav__row перестал помещаться в узком окне ДО старого брейкпоинта 760px
+   (проверено: при 761px требовалось 885px, реальная ширина 761-845px, скролл
+   всего документа по горизонтали). У мобильного меню — свой брейкпоинт ниже,
+   поднят в паре с этим до той же ширины, чтобы переключение оставалось синхронным. */
+@media (max-width: 900px) { .nav__links { display: none; } }
 /* Волна приёмки (31.08.2026). На десктопе шапка заканчивалась просто номером
    телефона — та же кнопка «Заказать кран», что и в мобильной mcta-панели
    (тот же --accent, тот же тёмный текст), только теперь видна и на широком
@@ -255,7 +260,7 @@ p { margin: 0; }
   transition: background-color var(--dur-1) var(--ease);
 }
 .nav__order-btn:hover { background: #ffb84d; }
-@media (max-width: 760px) { .nav__order-btn { display: none; } }
+@media (max-width: 900px) { .nav__order-btn { display: none; } }
 
 /* Калькулятор — ключевой интерактивный элемент сайта, а выглядел он мелкой
    формой в пустой полосе: 460px в контейнере 1180px. Теперь это прибор в том
@@ -750,7 +755,7 @@ html.js .reading-progress {
 /* Мобильное меню: <details> работает без JS, <summary> — нативная кнопка
    с состоянием expanded и клавиатурой из коробки. */
 .nav__mobile { display: none; }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .nav__row { position: relative; }
   .nav__mobile { display: block; }
   .nav__mobile-btn {
