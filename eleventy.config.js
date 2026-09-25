@@ -47,6 +47,17 @@ function injectH2Ids(html) {
   );
 }
 
+// 25.09.2026 (seo-2026-playbook §1, answer-first): лид статьи — первый <p>
+// тела — должен стоять в DOM раньше оглавления, иначе парсер AI-выдачи
+// первым «абзацем» страницы читает пункты ToC. splitLead отделяет первый
+// абзац, если тело с него начинается; иначе лид пустой и всё идёт как было.
+function splitLead(html) {
+  const s = String(html || "");
+  const m = s.match(/^\s*<p(?:\s[^>]*)?>[\s\S]*?<\/p>/i);
+  if (!m) return { lead: "", rest: s };
+  return { lead: m[0], rest: s.slice(m[0].length) };
+}
+
 // lastmod для sitemap.xml — время последнего изменения ИСХОДНОГО файла страницы.
 // Не дата сборки: одинаковый lastmod у всех URL обесценивает сигнал свежести для
 // всего домена, потому что Google учитывает его только когда он последовательно
@@ -73,6 +84,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("slugify", slugify);
   eleventyConfig.addFilter("extractH2s", extractH2s);
   eleventyConfig.addFilter("injectH2Ids", injectH2Ids);
+  eleventyConfig.addFilter("splitLead", splitLead);
   eleventyConfig.addFilter("head", (arr, n) => (Array.isArray(arr) ? arr.slice(0, n) : []));
   eleventyConfig.addFilter("excludePath", (arr, path) =>
     Array.isArray(arr) ? arr.filter((p) => p && p.data && p.data.path !== path) : []

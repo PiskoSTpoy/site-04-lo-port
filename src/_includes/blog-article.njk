@@ -9,6 +9,7 @@ layout: layout.njk
      туда же. #}
 {% set _h2s = content | extractH2s %}
 {% set _bodyWithIds = content | injectH2Ids %}
+{% set _split = _bodyWithIds | splitLead %}
 {% set _hasToc = _h2s.length >= 3 %}
 {# Волна 14.09.2026: excludePath+head(3) всегда возвращали одни и те же
    3 поста (первые по алфавиту заголовка) — 11 из 15 статей блога не
@@ -25,21 +26,20 @@ layout: layout.njk
   </nav>
 
   <div class="article-shell wrap">
-    {% if _hasToc %}
-    <aside class="toc toc--desktop" aria-label="Содержание статьи">
-      <div class="toc__title">Содержание</div>
-      <ol class="toc__list">
-        {% for h in _h2s %}
-        <li><a href="#{{ h.id }}" data-toc-link="{{ h.id }}">{{ h.text }}</a></li>
-        {% endfor %}
-      </ol>
-    </aside>
-    {% endif %}
 
     <article class="article-shell__article prose">
       {% if eyebrow %}<span class="eyebrow">{{ eyebrow }}</span>{% endif %}
       <h1 class="article-shell__h1">{{ title }}</h1>
-      <p class="article-shell__byline">Логистическая служба КРАН-ЛО · обновлено в 2026 году</p>
+      {# 25.09.2026 (seo-2026-playbook §1): у новых статей в front-matter есть
+         published: "YYYY-MM-DD" — реальная дата выхода, в <time datetime>.
+         Старым статьям дату задним числом не придумываем — у них прежняя подпись. #}
+      {% if published %}{% set _pd = published.split("-") %}
+      <div class="article-shell__byline">Логистическая служба КРАН-ЛО · опубликовано <time datetime="{{ published }}">{{ _pd[2] }}.{{ _pd[1] }}.{{ _pd[0] }}</time></div>
+      {% else %}
+      <div class="article-shell__byline">Логистическая служба КРАН-ЛО · обновлено в 2026 году</div>
+      {% endif %}
+
+      {{ _split.lead | safe }}
 
       {% if _hasToc %}
       <details class="toc toc--mobile">
@@ -52,7 +52,7 @@ layout: layout.njk
       </details>
       {% endif %}
 
-      {{ _bodyWithIds | safe }}
+      {{ _split.rest | safe }}
 
       {# Волна 16: аккордеон на <details> заменён открытым списком «вопрос — ответ».
          Ответы видны сразу: и человеку меньше кликов, и требование Google к видимому
@@ -69,8 +69,21 @@ layout: layout.njk
       </div>
       {% endif %}
 
+      {% set sourcesHeadTag = "h2" %}
       {% include "sources.njk" %}
     </article>
+    {# 25.09.2026: сайдбар-оглавление стоит в DOM после статьи (лид — первым),
+       на место слева его ставит grid-column в main.css. #}
+    {% if _hasToc %}
+    <nav class="toc toc--desktop" aria-label="Содержание статьи">
+      <div class="toc__title">Содержание</div>
+      <ol class="toc__list">
+        {% for h in _h2s %}
+        <li><a href="#{{ h.id }}" data-toc-link="{{ h.id }}">{{ h.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </nav>
+    {% endif %}
   </div>
 
   {% if _relatedTop.length %}
