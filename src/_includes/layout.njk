@@ -123,7 +123,17 @@
       </details>
     </div>
   </header>
-  <div id="main-content" tabindex="-1">{{ content | safe }}</div>
+  {# seo-2026-playbook, 25.09.2026: injectH2Ids уже применялся в blog-article.njk
+     (id на H2 нужен для answer-unit цитирования по фрагменту), но только 15
+     статей блога используют этот layout — park/uslugi/marshruty/keysy/kalendar
+     и т.д. (layout: layout.njk напрямую) оставались без id. Фильтр идемпотентен
+     (пропускает h2 с уже проставленным id), поэтому безопасно вызвать его тут
+     ещё раз для ВСЕХ типов страниц разом, не трогая сами шаблоны страниц. TOC
+     для не-блоговых страниц сюда сознательно не добавлен — .toc--desktop
+     жёстко завязан на grid-раскладку .article-shell, которой у других типов
+     страниц нет; перенос TOC туда требует разбора вёрстки каждого типа
+     страницы отдельно, не regex-патча. #}
+  <div id="main-content" tabindex="-1">{{ content | injectH2Ids | safe }}</div>
   <footer class="footer wrap">
     <span>© 2026 КРАН-ЛО · kran-lo.ru</span>
     {# Обе правовые ссылки — в подвале, то есть на КАЖДОЙ странице сайта, а не
