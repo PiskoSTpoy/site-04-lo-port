@@ -23,7 +23,7 @@
   {# sourcesHeadTag = "h2" — на статьях блога заголовок блока становится H2
      с якорем: так блок источников находят и читатель по оглавлению, и
      парсеры AI-выдачи (seo-2026-playbook §1). На остальных страницах — <p>. #}
-  {% if sourcesHeadTag == "h2" %}<h2 id="istochniki" class="sources__head">Источники · проверено {{ season.checked }}</h2>{% else %}<p class="sources__head">Источники · проверено {{ season.checked }}</p>{% endif %}
+  {% if sourcesHeadTag == "h2" %}<h2 id="istochniki" class="sources__head">Источники · проверено {{ sourcesChecked or season.checked }}</h2>{% else %}<p class="sources__head">Источники · проверено {{ sourcesChecked or season.checked }}</p>{% endif %}
   <ul class="sources__list">
     {% for key in sourceKeys %}
       {% if key == "order" %}
