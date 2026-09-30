@@ -787,4 +787,8 @@ module.exports = {
     href: "https://psk-energo.ru/catalog/zhilishhnoe-stroitelstvo/plityi-perekryitij/pk/pk-60-12-8",
     text: "Каталог производителя ЖБИ — плита перекрытия ПК 60.12-8 по ГОСТ 9561-2016: 5 980 × 1 190 × 220 мм, объём 1,566 м³, масса 2,192 т",
   },
+  krupnogabaritThresholds: {
+    href: "https://www.multirail.ru/baza-znanij/parametry-negabaritnogo-gruza/51-parametry-krupnogabaritnogo-i-tyazhelovesnogo-gruza-pri-avtoperevozkakh",
+    text: "ОТК «ЮниТранс» — параметры крупногабаритного и тяжеловесного груза при автоперевозках (по Правилам перевозок грузов автомобильным транспортом): крупногабаритным считается ТС длиной более 12 м (одиночное), шириной более 2,55 м (2,6 м для рефрижераторов), высотой более 4 м",
+  },
 };
