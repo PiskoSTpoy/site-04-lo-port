@@ -126,6 +126,16 @@ module.exports = function (eleventyConfig) {
     return posts;
   });
 
+  // 12.10.2026: .md — не шаблоны этого сайта (весь контент в .njk), а отдаваемые
+  // как есть файлы из src/public (pricing.md для AI-краулеров). Без этой строки
+  // 11ty дополнительно рендерил pricing.md в голый /public/pricing/index.html —
+  // без head, canonical и title, живой на проде. Копирование md как есть
+  // обеспечивает addPassthroughCopy выше, шаблонами они быть не должны.
+  eleventyConfig.setTemplateFormats(["njk", "html", "11ty.js"]);
+  // То же для .html из src/public (файл верификации Яндекса): он копируется как
+  // есть, а как шаблон давал второй, лишний URL /public/yandex_*/.
+  eleventyConfig.ignores.add("src/public/**");
+
   return {
     dir: {
       input: "src",
