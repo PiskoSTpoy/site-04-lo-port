@@ -20,3 +20,9 @@
 Коммит и деплой — см. ниже.
 
 **Дальше:** kran-kuban.ru (Astro) — по методу site-01 (moskran-servis), с проверкой на похожую частичную инфраструктуру до патча.
+
+## Еженедельный аудит 12.10.2026 (portfolio-weekly-recommendations-leads, п.4b/5)
+`geo_check.py _site --entity "KRAN-LO" --lang ru --strict --skip-noindex` (отчёт `_audit_geo_20261012.json`): 114 стр., FAIL 3 / WARN 111 → после правки 112 стр. (стрейные убраны). `uniqueness_check --internal` = 0 дублей.
+- **Починено (коммит 5efa0c1, gh-pages):** 11ty рендерил `src/public/pricing.md` и `src/public/yandex_*.html` как шаблоны → живые голые страницы `/public/pricing/` и `/public/yandex_*/` без head/canonical (были FAIL «нет canonical/H1»). В `eleventy.config.js`: `setTemplateFormats(["njk","html","11ty.js"])` + `ignores.add("src/public/**")`; passthrough не затронут. Живая проверка: `/`, `/pricing.md`, `/llms.txt`, `/robots.txt`, `/sitemap.xml`, `/yandex_4979f2bd2dda2a19.html` = 200; `/public/pricing/` и `/public/yandex_*/` = 404; CNAME `kran-lo.ru` на месте. Деплой с `--nojekyll` (на remote был `.nojekyll`).
+- **Бэклог для режима `article` (текст, не структура):** сущность «KRAN-LO» в малой доле абзацев (102 стр.); 54 стр. — первое предложение без числа/названия; 33 — intro короче нормы (keysy×14, marshruty×9, park×4, uslugi×4); 21 — description вне нормы (20 в блоге); 26 — нет TOC (в основном страницы типов marshruty/park/uslugi); нет автора/`<time>`/FAQ на не-блоговых типах — только если есть реальные данные, не выдумывать.
+- Лиды: см. отчёт недели — Метрика-цели в коде отсутствуют (`reachGoal` нет), мессенджер-кнопок на главной нет.
